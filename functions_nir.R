@@ -1,4 +1,9 @@
 # Function to tidy NIR output data
+# equations taken from Moore and Undersander 2002
+# see https://www.foragelab.com/Media/Relative_Forage_Quality.pdf
+
+
+
 
 # library(googlesheets4)
 library(tidyverse)
@@ -31,14 +36,15 @@ tidy.nir.report <- function(perten_extensive_report) {
     return()
 }
 
-calc.rfq.rfv <- function(nir_tidy_data) {
+# Do not use this function on forages containing legumes!
+calc.rfq.rfv.grass <- function(nir_tidy_data) {
   nir_tidy_data %>% 
     mutate(DM=drymatter,
            CP=protein,
            NDF=ndf,
            NDFD=ndf48h,
            ADF=adf,
-           EE=2.05, #2.05 is constant
+           EE=2.05, #2.05 is constant, extractable ether
            FA=EE-1,
            Ash=100-DM,
            NFC=100-((0.93*NDF)+CP+EE+Ash),
@@ -50,11 +56,5 @@ calc.rfq.rfv <- function(nir_tidy_data) {
            rfq=DMI*TDN/1.23,
            rfv=DMI*((89.8-(0.779*ADF)))/1.29)
 }
-
-# tidy.nir.report(perten_extensive_report = dat) %>% 
-#   # glimpse()
-#   calc.rfq.rfv(.) %>% 
-#   glimpse()
-
 
 
