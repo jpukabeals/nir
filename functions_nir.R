@@ -26,7 +26,7 @@ tidy.nir.report <- function(perten_extensive_report) {
            adf=`adf as is %, predicted`,
            ndf=`ndf as is %, predicted`,
            ndf48h = `48dndfr as is %, predicted`) %>%
-    select(filename,datetime, code, drymatter,protein,adf,ndf,ndf48h) %>%
+    select(datetime, code, drymatter,protein,adf,ndf,ndf48h) %>%
     mutate(datetime=as.POSIXct(datetime,
                                format="%m/%d/%Y %H:%M:%S %p")) %>% 
     mutate(protein=protein*drymatter/100,
