@@ -14,7 +14,7 @@ library(tidyverse)
 # dat <- read_sheet(url,
 #                   gs4_deauth())
 
-tidy.nir.report <- function(perten_extensive_report) {
+tidy.nir.report.with.spaces <- function(perten_extensive_report) {
   # library(dplyr)
   perten_extensive_report %>% 
     rename_all(.,tolower) %>% 
@@ -26,6 +26,28 @@ tidy.nir.report <- function(perten_extensive_report) {
            adf=`adf as is %, predicted`,
            ndf=`ndf as is %, predicted`,
            ndf48h = `48dndfr as is %, predicted`) %>%
+    select(datetime, code, drymatter,protein,adf,ndf,ndf48h) %>%
+    mutate(datetime=as.POSIXct(datetime,
+                               format="%m/%d/%Y %H:%M:%S %p")) %>% 
+    mutate(protein=protein*drymatter/100,
+           adf=adf*drymatter/100,
+           ndf=ndf*drymatter/100,
+           ndf48h=ndf48h*drymatter/100) %>% 
+    return()
+}
+
+tidy.nir.report.with.periods <- function(perten_extensive_report) {
+  # library(dplyr)
+  perten_extensive_report %>% 
+    rename_all(.,tolower) %>% 
+    filter(`product.name`=="Hay") %>%
+    mutate(datetime=`date.time.of.analysis`,
+           code=`sample.id`,
+           drymatter=dry.matter....predicted,
+           protein=`protein.as.is....predicted`,
+           adf=`adf.as.is....predicted`,
+           ndf=`ndf.as.is....predicted`,
+           ndf48h = x48dndfr.as.is....predicted) %>%
     select(datetime, code, drymatter,protein,adf,ndf,ndf48h) %>%
     mutate(datetime=as.POSIXct(datetime,
                                format="%m/%d/%Y %H:%M:%S %p")) %>% 
