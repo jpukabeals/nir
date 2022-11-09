@@ -33,6 +33,17 @@ dat_tidy_treatments %>%
   select(experiment,site,year,plot,sample_biomass_type,
          rfq,rfv,protein,adf,ndf,ndf48h) -> dat_export
 
+dat_export %>% 
+  ggplot(aes(protein)) +
+  stat_bin()
+
+dat_export %>% 
+  # glimpse()
+  distinct(sample_biomass_type)
+  
+
+
+
 ##making sure it makes sense before export
 
 dat_export %>% 
