@@ -47,13 +47,73 @@ treatmentKey %>%
   drop_na(`Bottle Code`) %>% 
   mutate(`Sample ID` = `Bottle Code`)-> treatmentKey2
 
+# 2021 treatment keys
+# In the future, we should combine all treatment keys in 1 sheet
+url_treatmentKey3 <- "https://docs.google.com/spreadsheets/d/1CZfJTTfBaAa7B09sv2M8Xd8AndKjeuAIYVef38pgJAM/edit#gid=0"
 
-# full join raw reports with treatment key by bottle code
+read_sheet(
+  url_treatmentKey3,
+  sheet = 1
+) -> treatmentKey3
+
+treatmentKey3 %>% 
+  mutate(
+    across(
+      where(is.list),
+      nullToNA
+    )
+  ) %>% 
+  mutate(
+    across(
+      where(is.list),
+      unlist
+    )
+  ) %>% 
+  drop_na(`Bottle Code`) %>% 
+  mutate(`Sample ID` = `Bottle Code`) -> treatmentKey4
+
+
+# 2020 treatment keys
+url_treatmentKey5 <- "https://docs.google.com/spreadsheets/d/1sFwDptu4xwjWh9RyyUpcWZdVrjzy0dy_Uv5dAv1mnmg/edit#gid=2088314350"
+
+read_sheet(
+  url_treatmentKey5,
+  sheet = 1
+) -> treatmentKey5
+
+treatmentKey5 %>% 
+  mutate(
+    across(
+      where(is.list),
+      nullToNA
+    )
+  ) %>% 
+  mutate(
+    across(
+      where(is.list),
+      unlist
+    )
+  ) %>% 
+  drop_na(`Bottle Code`) %>% 
+  mutate(`Sample ID` = `Bottle Code`) -> treatmentKey6
+
+
+bind_rows(treatmentKey2,
+          treatmentKey4,
+          treatmentKey6) -> treatmentKeyMaster 
+  
+# full join raw reports with treatment key by bottle code just 2022 bottle codes
 treatmentKey2 %>% 
   full_join(compiledReports) %>%
+  # View()
   write.csv("nir_raw-report-with-treatments_full-join.csv")
 
-treatmentKey2 %>% 
+# right join for 2020-2022 bottle code key
+treatmentKeyMaster %>% 
   right_join(compiledReports) %>% 
+  # View()
   write.csv("nir_raw-report-with-treatments_right-join.csv")
+
+# It's ugly and bulky, but someone can filter through this csv file to find
+# enough ID characteristics associated with a scan to get what they need
 
