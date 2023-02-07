@@ -3,7 +3,23 @@
 # see https://www.foragelab.com/Media/Relative_Forage_Quality.pdf
 # see http://www.southdakotaagriculturallaboratories.com/uploads/1/3/5/2/13521518/exex8149_understanding_rfv_and_rfq.pdf
 # SDSU publication used for RFV caluclation
+# see https://pir.sa.gov.au/__data/assets/pdf_file/0007/272869/Calculating_dry_matter_intakes.pdf
 
+# REVIEW RFV EQUATION. IS DMI SAME FOR GRASS VS LEGUME? SHOULD BE i THINK!
+
+# Acceptable ranges
+
+# RFV is mostly a measure of ADF. ADF around 35 is undigestable hay with RFV
+# under 130. ADF around 25 is super good hay with RFV around 190.
+
+# RFQ is an updated version of RFV that doesn't penalize grass forages as much
+# for their higher ADF. It has a similar range, where 100 is ok and 160 is
+# really good
+
+# Protein should range 8-14% for grass and 14-17% for legume-grass
+
+# NDF ranges from 40-65%, lower NDF is fresh grass, higher than 65 is stems and
+# it probably won't be eaten.
 
 
 # library(googlesheets4)
@@ -82,7 +98,9 @@ tidy.nir.report.with.periods <- function(perten_extensive_report) {
     return()
 }
 
-# Do not use this function on forages containing legumes!
+
+# calculations ------------------------------------------------------------
+
 calc.rfq.rfv.grass <- function(nir_tidy_data) {
   nir_tidy_data %>% 
     mutate(DM=drymatter,
@@ -97,13 +115,13 @@ calc.rfq.rfv.grass <- function(nir_tidy_data) {
            NDFn=NDF*0.93, 
            NDFDp=22.7+0.664*NDFD,
            TDN.grass=(NFC*.98)+(CP*.87)+(FA*.97*2.25)+(NDFn*NDFDp/100)-10,
-           DMI.grass=(-2.318)+(.442*CP)-(.01*CP^2)-(.0638*TDN)+(.000922*TDN^2)+
+           DMI.grass=(-2.318)+(.442*CP)-(.01*CP^2)-(.0638*TDN.grass)+(.000922*TDN.grass^2)+
              (.18*ADF)-(0.00196*ADF^2)-(0.00529*CP*ADF),
            rfq.grass=DMI.grass*TDN.grass/1.23,
            DDM.rfv = 88.9-(.779*ADF),
            DMI.rfv = 120/NDF,
-           rfv= DDM.rfv*DMI.rfv/1.29,
-           rfv.old=DMI.grass*((89.8-(0.779*ADF)))/1.29)
+           rfv.sdsu= DDM.rfv*DMI.rfv/1.29)
+           # rfv.old=DMI.grass*((89.8-(0.779*ADF)))/1.29)
 }
 
 calc.rfq.rfv.legume <- function(nir_tidy_data) {
@@ -121,10 +139,37 @@ calc.rfq.rfv.legume <- function(nir_tidy_data) {
            NDFDp=22.7+0.664*NDFD,
            TDN.legume=(NFC*.98)+(CP*.93)+(FA*.97*2.25)+(NDFn*NDFD/100)-7,
            DMI.legume=(120/NDF) + (NDFD - 45) * .374/1350*100,
-           rfq.legume=DMI.legume*TDN/1.23,
+           rfq.legume=DMI.legume*TDN.legume/1.23,
            DDM.rfv = 88.9-(.779*ADF),
            DMI.rfv = 120/NDF,
-           rfv= DDM.rfv*DMI.rfv/1.29,
-           rfv.old=DMI.grass*((89.8-(0.779*ADF)))/1.29)
+           rfv.sdsu= DDM.rfv*DMI.rfv/1.29)
+           # rfv.old=DMI.legume*((89.8-(0.779*ADF)))/1.29)
 }
+
+calc.rfq.rfv <- function(nir_tidy_data) {
+  nir_tidy_data %>% 
+    mutate(DM=drymatter,
+           CP=protein*DM/100,
+           NDF=ndf*DM/100,
+           NDFD=ndf48h,
+           ADF=adf,
+           EE=2.05*DM/100, #2.05 is constant, extractable ether
+           FA=EE-1,
+           Ash=100-DM,
+           NFC=100-((0.93*NDF)+CP+EE+Ash),
+           NDFn=NDF*0.93, 
+           NDFDp=22.7+0.664*NDFD,
+           TDN.legume=(NFC*.98)+(CP*.93)+(FA*.97*2.25)+(NDFn*NDFD/100)-7,
+           DMI.legume=(120/NDF) + (NDFD - 45) * .374/1350*100,
+           TDN.grass=(NFC*.98)+(CP*.87)+(FA*.97*2.25)+(NDFn*NDFDp/100)-10,
+           DMI.grass=(-2.318)+(.442*CP)-(.01*CP^2)-(.0638*TDN.grass)+(.000922*TDN.grass^2)+
+             (.18*ADF)-(0.00196*ADF^2)-(0.00529*CP*ADF),
+           rfq.grass=DMI.grass*TDN.grass/1.23,
+           rfq.legume=DMI.legume*TDN.legume/1.23,
+           DDM.rfv = 88.9-(.779*ADF),
+           DMI.rfv = 120/NDF,
+           rfv= DDM.rfv*DMI.rfv/1.29)
+}
+
+
 
