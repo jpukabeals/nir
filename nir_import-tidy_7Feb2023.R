@@ -123,5 +123,15 @@ treatmentKeyMaster %>%
 
 source("functions_nir.R")
 
-compiledReports
-tidy.nir.report.with.spaces(compiledReports)
+compiledReports %>% 
+  colnames()
+
+tidy.nir.report.with.spaces.predicted.first(compiledReports) %>% 
+  mutate(`Sample ID` = code) %>% 
+  calc.rfq.rfv() %>%
+  # colnames()
+  dplyr::select(`Sample ID`,CP,NDF,ADF,rfv,rfq.grass,rfq.legume) %>% 
+  left_join(treatmentKeyMaster) %>% 
+  # View()
+  write.csv("nir_processed-report-with-treatments_right-join.csv")
+
