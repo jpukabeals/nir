@@ -123,15 +123,29 @@ treatmentKeyMaster %>%
 
 source("functions_nir.R")
 
-compiledReports %>% 
+# Renaming columns to avoid future confusion
+treatmentKeyMaster %>% 
   colnames()
 
+colnames(treatmentKeyMaster) <- c("Sample ID", paste0(rep("ID",25),1:25))
+
+# Output
 tidy.nir.report.with.spaces.predicted.first(compiledReports) %>% 
   mutate(`Sample ID` = code) %>% 
   calc.rfq.rfv() %>%
   # colnames()
   dplyr::select(`Sample ID`,CP,NDF,ADF,rfv,rfq.grass,rfq.legume) %>% 
   left_join(treatmentKeyMaster) %>% 
-  # View()
-  write.csv("nir_processed-report-with-treatments_right-join.csv")
+  # colnames()
+  mutate(
+    across(8:32,
+           as.character)
+  ) %>% 
+  mutate(
+    across(8:32,
+           ~replace_na(.,""))
+  ) %>% 
+  write.csv(
+    "nir_processed-report-with-treatments_right-join.csv",
+    row.names = F)
 
