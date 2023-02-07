@@ -117,3 +117,11 @@ treatmentKeyMaster %>%
 # It's ugly and bulky, but someone can filter through this csv file to find
 # enough ID characteristics associated with a scan to get what they need
 
+
+# Calculating RFQ-RFQ -----------------------------------------------------
+
+
+source("functions_nir.R")
+
+compiledReports
+tidy.nir.report.with.spaces(compiledReports)
