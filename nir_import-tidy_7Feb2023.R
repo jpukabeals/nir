@@ -23,11 +23,31 @@ read_sheet(
 # Bottle Code is being read as a list
 # When we unlist Bottle Code, it is size 1000, needs to be size 1021
 
+# I found this function that will convert list values from NULL to NA, then we
+# can convert out of list without dropping rows and then filter
+
+nullToNA <- function(x) {
+  x[sapply(x, is.null)] <- NA
+  return(x)
+}
+
 treatmentKey %>% 
+  mutate(
+    across(
+      where(is.list),
+      nullToNA
+    )
+  ) %>% 
+  mutate(
+    across(
+      where(is.list),
+      unlist
+    )
+  ) %>% 
   drop_na(`Bottle Code`) %>% 
-  mutate(`Sample ID` = unlist(`Bottle Code`),
-         # year = unlist(Year),
-         .before = `Bottle Code`) %>% 
+  mutate(`Sample ID` = `Bottle Code`)-> treatmentKey2
+
+# 
   # full_join(compiledReports) %>% 
   left_join(compiledReports) %>% 
   mutate(
