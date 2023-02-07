@@ -47,20 +47,13 @@ treatmentKey %>%
   drop_na(`Bottle Code`) %>% 
   mutate(`Sample ID` = `Bottle Code`)-> treatmentKey2
 
-# 
-  # full_join(compiledReports) %>% 
-  left_join(compiledReports) %>% 
-  mutate(
-    across(where(is.list),
-           unlist)
-  ) %>%
-  # View()
-  write.csv("nir_raw-report-with-treatments_left-join.csv")
 
 # full join raw reports with treatment key by bottle code
+treatmentKey2 %>% 
+  full_join(compiledReports) %>%
+  write.csv("nir_raw-report-with-treatments_full-join.csv")
 
-compiledReports %>% 
-  dplyr::rename(bottle = `Sample ID`)
-  full_join(treatmentKey)
+treatmentKey2 %>% 
+  right_join(compiledReports) %>% 
+  write.csv("nir_raw-report-with-treatments_right-join.csv")
 
-# assess whether this method of joining NIR data works. 
