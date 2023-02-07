@@ -149,11 +149,11 @@ calc.rfq.rfv.legume <- function(nir_tidy_data) {
 calc.rfq.rfv <- function(nir_tidy_data) {
   nir_tidy_data %>% 
     mutate(DM=drymatter,
-           CP=protein*DM/100,
-           NDF=ndf*DM/100,
+           CP=protein,
+           NDF=ndf,
            NDFD=ndf48h,
            ADF=adf,
-           EE=2.05*DM/100, #2.05 is constant, extractable ether
+           EE=2.05, #2.05 is constant, extractable ether
            FA=EE-1,
            Ash=100-DM,
            NFC=100-((0.93*NDF)+CP+EE+Ash),
