@@ -98,6 +98,29 @@ tidy.nir.report.with.periods <- function(perten_extensive_report) {
     return()
 }
 
+tidy.nir.report.with.periods2 <- function(perten_extensive_report) {
+  # library(dplyr)
+  perten_extensive_report %>% 
+    rename_all(.,tolower) %>% 
+    filter(`product.name`=="Hay") %>%
+    # colnames()
+    mutate(datetime=`date.time.of.analysis`,
+           code=`sample.id`,
+           drymatter=predicted.dry.matter..,
+           protein=`predicted.protein.as.is..`,
+           adf=`predicted.adf.as.is..`,
+           ndf=`predicted.ndf.as.is..`,
+           ndf48h = predicted.48dndfr.as.is..) %>%
+    select(datetime, code, drymatter,protein,adf,ndf,ndf48h) %>%
+    mutate(datetime=as.POSIXct(datetime,
+                               format="%m/%d/%Y %H:%M:%S %p")) %>% 
+    mutate(protein=protein*drymatter/100,
+           adf=adf*drymatter/100,
+           ndf=ndf*drymatter/100,
+           ndf48h=ndf48h*drymatter/100) %>% 
+    return()
+}
+
 
 # calculations ------------------------------------------------------------
 
