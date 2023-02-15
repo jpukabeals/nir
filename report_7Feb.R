@@ -15,28 +15,28 @@ dat2 %>%
   ggplot(aes(CP)) +
   stat_bin() +
   labs(
-    caption = "CP range should be 10-20% for alfalfa"
+    caption = "CP range should be 14-26% for alfalfa"
   )
 
 dat2 %>% 
   ggplot(aes(NDF)) +
   stat_bin() +
   labs(
-    caption = "NDF range should be around 40"
+    caption = "NDF range should be around 25-52 for alfalfa"
   )
 
 dat2 %>% 
   ggplot(aes(ADF)) +
   stat_bin() +
   labs(
-    caption = "ADF should be around 25-30 for alfalfa"
+    caption = "ADF should be around 20-43 for alfalfa"
   )
 
 dat2 %>% 
   ggplot(aes(rfq.legume)) +
   stat_bin() +
   labs(
-    caption = "RFQ should be around 125-225 for alfalfa, but it can up to 300"
+    caption = "RFQ should be around 100-225 for alfalfa, but it can up to 300. Should be around 150 most of the time"
   )
 
 # I think we have super low ADF values which are causing our rfq values to be
