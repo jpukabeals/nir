@@ -29,3 +29,12 @@ vignettes/*.pdf
 NIR.MOB.stripgraze.R
 nir_allHay_15Feb2023.csv
 compiled_extensive-reports
+bottleCodes_compiled_2020to2023.csv
+clipboard
+dummy.csv
+dummy2.csv
+nir_raw-report-with-treatments_full-join.csv
+nir_processed-report-with-treatments_right-join.csv
+kodu_nirData_15Feb2023.csv
+nir_raw-report-with-treatments_right-join.csv
+report_7Feb.html
