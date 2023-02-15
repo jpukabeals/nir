@@ -27,3 +27,5 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 NIR.MOB.stripgraze.R
+nir_allHay_15Feb2023.csv
+compiled_extensive-reports
