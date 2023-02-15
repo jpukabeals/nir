@@ -110,10 +110,11 @@ tidy.nir.report.with.periods2 <- function(perten_extensive_report) {
            protein=`predicted.protein.as.is..`,
            adf=`predicted.adf.as.is..`,
            ndf=`predicted.ndf.as.is..`,
-           ndf48h = predicted.48dndfr.as.is..) %>%
+           ndf48h = predicted.48dndfr.as.is..) %>% 
     select(datetime, code, drymatter,protein,adf,ndf,ndf48h) %>%
+    # glimpse()
     mutate(datetime=as.POSIXct(datetime,
-                               format="%m/%d/%Y %H:%M:%S %p")) %>% 
+                               format="%Y-%m-%d %H:%M:%S")) %>% 
     mutate(protein=protein*drymatter/100,
            adf=adf*drymatter/100,
            ndf=ndf*drymatter/100,
