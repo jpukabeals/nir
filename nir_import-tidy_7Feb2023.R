@@ -101,6 +101,9 @@ treatmentKey5 %>%
 bind_rows(treatmentKey2,
           treatmentKey4,
           treatmentKey6) -> treatmentKeyMaster 
+
+treatmentKeyMaster %>% 
+  write.csv("bottleCodes_compiled_2020to2023.csv")
   
 # full join raw reports with treatment key by bottle code just 2022 bottle codes
 treatmentKey2 %>% 
