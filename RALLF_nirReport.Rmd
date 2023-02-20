@@ -1,0 +1,232 @@
+---
+title: "RALLF Forage Quality"
+subtitle: "preliminary report"
+date: "2023 February"
+author: "Jesse Puka-Beals"
+output:
+  pdf_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# To do
+need to figure out dataset design
+
+date plots data
+
+year plots cut_num harvest_point
+
+plot treatments
+
+
+2021 had 2 cuts and 3 cuts, starting in july
+2022  had 3 cuts or 4 cuts
+
+2021
+1st cut
+2nd cut 1
+2nd cut 2
+3rd cut
+
+2022
+1st cut 1
+1st cut 2
+2nd cut 1
+2nd cut 2
+3rd cut 1
+3rd cut 2
+4th cut 1
+
+
+
+
+```{r, echo=F, include=F}
+knitr::opts_chunk$set(
+  echo = F,
+  warning = F
+)
+
+library(tidyverse)
+library(tidyr)
+
+```
+
+
+```{r,cache=F, include=F}
+source("nir_importTidy_15Feb2023.R")
+
+```
+
+\newpage
+# What we expect
+
+```{r}
+
+
+c(
+  "2021",
+  "2022"
+) -> year
+
+c(
+  "rosemount",
+  "st paul"
+) -> site
+
+c(
+  "hx3",
+  "hx4",
+  "hx5",
+  "rr3",
+  "rr4",
+  "rr5"
+) -> variety
+
+seq(1,4,1) -> rep
+
+c(
+  "35-day",
+  "45-day"
+) -> intensity
+
+seq(1,4,1) -> cut
+
+expand_grid(
+  year,site,rep,variety,intensity,cut
+            ) -> df1
+  
+
+# df1 %>% 
+#   filter(year != "2021" | cut != "4") %>% 
+#   filter(year != "2021" | cut != "3" | intensity != "45-day") %>% 
+#   filter(year != "2022" | cut != "4" | intensity != "45-day") %>% 
+#   group_by(year, cut, intensity, site) %>% 
+#   tally() %>% 
+#   print(n=100)
+
+# adding in the date information of cuttings onto this dataframe format
+
+c(
+## 2021  
+# first cut 
+  "07/16/2021",
+  "07/16/2021",
+  "07/16/2021",
+  "07/16/2021",
+# second cut 
+  "08/20/2021",
+  "08/20/2021",
+  "09/01/2021",
+  "09/01/2021",
+# third cut
+  "10/18/2021",
+  "10/18/2021",
+
+## 2022
+# first cut
+  "05/24/2022",
+  "05/23/2022",
+  "05/24/2022",
+  "05/23/2022",
+
+# second cut
+  "06/29/2022",
+  "06/29/2022",
+  "07/12/2022",
+  "07/12/2022",
+
+# third cut
+  "08/02/2022",
+  "08/02/2022",
+  "08/22/2022",
+  "08/22/2022",
+
+# fourth cut
+  "09/07/2022",
+  "09/07/2022"
+) -> date
+
+df1 %>% 
+  filter(year != "2021" | cut != "4") %>% 
+  filter(year != "2021" | cut != "3" | intensity != "45-day") %>% 
+  filter(year != "2022" | cut != "4" | intensity != "45-day") %>% 
+  group_by(year, cut, intensity, site) %>% 
+  tally() -> df2
+
+df2$date <- as.POSIXct(date,
+                        format = "%m/%d/%Y")
+
+df2 %>% 
+  group_by(date, site, intensity, cut) %>% 
+  tally() %>% 
+  arrange(date) %>% 
+  mutate(n=n*24) %>% 
+  knitr::kable(
+    # simplify=T,
+    caption = "expected forage quality data points by date")
+
+
+```
+
+
+
+\newpage
+# What we have
+
+```{r}
+
+# unique(dat6$harvest_point)
+# unique(dat6$year)
+
+# expand_grid(
+#   year = rev(unique(dat6$year)),
+#   harvest_point = unique(dat6$harvest_point)
+# )
+
+
+c(
+# 2021
+"",
+"",
+"2021-07-16",
+"",
+"2021-08-20",
+"2021-09-01",
+"",
+# 2022
+unique(as.character(df2$date))[5:11]
+) -> dates2
+
+expand_grid(
+  year = rev(unique(dat6$year)),
+  harvest_point = unique(dat6$harvest_point)
+) %>% 
+  # print()
+  mutate(date = dates2) -> df3
+
+
+
+```
+
+
+```{r}
+dat6 %>% 
+  # filter(year==2021) %>% 
+  group_by(year,site,
+           harvest_point,
+           harvest_timing,cut) %>% 
+  tally() %>% 
+  left_join(df3) %>% 
+  ungroup() %>%
+  # dplyr::select(-c(harvest_point,harvest_timing)) %>% 
+  # dplyr::select(c(date, site, cut,n)) %>% 
+  knitr::kable(
+    caption="2021 observed forage quality data"
+  )
+```
+
+
+
+# What we are seeing
+
+

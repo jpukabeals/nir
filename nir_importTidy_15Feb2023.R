@@ -1,4 +1,6 @@
 
+
+
 source("functions_nir.R")
 
 library(tidyverse)
@@ -57,38 +59,130 @@ treatmentKey2 %>%
 # we have 2148 bottle codes between 2020:2022
 
 # we tack on the treatment key where we have matches, but keep all scan info
-dat3 %>% 
-  left_join(treatmentKey3) %>% 
-  # dim()
-  View()
+# dat3 %>% 
+#   left_join(treatmentKey3) %>% 
+#   # dim()
+#   View()
 
 
 # just show me nir data that has a match with treatment key
 treatmentKey3 %>% 
   inner_join(dat3) -> dat4
-  
 
-# now let's get the kodu data
+
+# RALLF -------------------------------------------------------------------
+
+# Lets get that RALLF data
+
+
 
 dat4 %>% 
   mutate_all(tolower) %>% 
-  # View()
   filter_all(
     .,
     .vars_predicate = any_vars(
-      str_detect(.,"kodu") #|
-        # str_detect(.,"orei")
-        )) %>% 
-  # summarise_all((~sum(is.na(.)))) %>% 
-  # pivot_longer(cols = -0) %>% 
-  # arrange(desc(value)) %>% 
-  # filter(value==173) %>% 
-  # .$name -> filterout
-  dplyr::select(-all_of(filterout)) %>% 
+      str_detect(.,"rallf") #|
+    )) %>% 
   # glimpse()
-  # dim
   # View()
   write.csv("dummy.csv")
+
+# going to tidy in excel
+
+# experiment details\
+# each site, n=48
+# each cutting schedule, n=2
+
+# 2021 there are 3 cuts, 7/16, 8/20, 9/1, 10/18
+
+library(googlesheets4)
+read_sheet(
+  "https://docs.google.com/spreadsheets/d/1VY6EwF6AqK_G9cSJysfAWyfH9BS61m88rZPFHjsGmWs/edit#gid=0"
+) -> dat7
+
+dat7 %>% 
+  # group_by(Date, Location) %>% 
+  # group_by(Location,Date) %>% 
+  # group_by(Location,Harvest, Date) %>% 
+  group_by(Location,Harvest) %>% 
+  tally()
+
+# harvest_point is cut number
+
+
+# we are missing 2022 rosemount cut1
+
+# we are missing harvest point 4 data for both sites
+
+  
+# first cutting should have n=48, rest should be n=24
+# 
+# read.csv("dummy.csv") %>% 
+#   write.csv("RALLF_nirData_20Feb2023.csv")
+
+read.csv("RALLF_nirData_20Feb2023.csv") -> dat5
+
+
+dat5 %>% 
+  glimpse()
+# adding in more descriptive timepoint data
+
+
+seq(1,6,1) -> harvest_point
+c(
+  "~24May",
+  "~28Jun",
+  "~8Jul",
+  "~2Aug",
+  "~22Aug",
+  "~6Sep"
+) -> harvest_timing
+
+tibble(
+  harvest_point,
+  harvest_timing
+) %>% 
+  right_join(
+    dat5
+  ) %>% 
+  relocate(c(harvest_point,harvest_timing),
+           .after = variety) %>% 
+  dplyr::select(-c(X,code,datetime)) -> dat6
+  
+dat6 %>% 
+  group_by(year,site,
+           # harvest_timing
+           harvest_point
+           ) %>% 
+  tally()
+
+dat6 %>% 
+  group_by(year,site,harvest_point, harvest_timing,cut) %>% 
+  tally() %>% 
+  print(n=100)
+
+
+
+# KODU --------------------------------------------------------------------
+
+
+# now let's get the kodu data
+
+# dat4 %>%
+#   mutate_all(tolower) %>%
+#   # View()
+#   filter_all(
+#     .,
+#     .vars_predicate = any_vars(
+#       str_detect(.,"kodu") #|
+#         # str_detect(.,"orei")
+#         )) %>%
+#   # .$name -> filterout
+#   dplyr::select(-all_of(filterout)) %>%
+#   # glimpse()
+#   # dim
+#   # View()
+#   write.csv("dummy.csv")
 
 # I tidied stuff in excel
 
