@@ -75,7 +75,6 @@ treatmentKey3 %>%
 # Lets get that RALLF data
 
 
-
 dat4 %>% 
   mutate_all(tolower) %>% 
   filter_all(
@@ -122,32 +121,41 @@ dat7 %>%
 
 read.csv("RALLF_nirData_20Feb2023.csv") -> dat5
 
-
+# fixing st. paul naming issue
 dat5 %>% 
-  glimpse()
-# adding in more descriptive timepoint data
+  mutate(site = fct_recode(site,
+                           "st paul" = "st. paul")) -> dat5
 
 
-seq(1,6,1) -> harvest_point
-c(
-  "~24May",
-  "~28Jun",
-  "~8Jul",
-  "~2Aug",
-  "~22Aug",
-  "~6Sep"
-) -> harvest_timing
+# dat5 %>% 
+#   # glimpse()
+#   distinct(harvest_point)
+# # adding in more descriptive timepoint data
+# 
+# 
+# seq(1,6,1) -> harvest_point
+# c(
+#   "~24May",
+#   "~28Jun",
+#   "~8Jul",
+#   "~2Aug",
+#   "~22Aug",
+#   "~6Sep"
+# ) -> harvest_timing
 
-tibble(
-  harvest_point,
-  harvest_timing
-) %>% 
-  right_join(
-    dat5
-  ) %>% 
-  relocate(c(harvest_point,harvest_timing),
-           .after = variety) %>% 
-  dplyr::select(-c(X,code,datetime)) -> dat6
+# tibble(
+#   harvest_point,
+#   harvest_timing
+# ) %>% 
+#   right_join(
+#     dat5
+#   ) %>% 
+#   relocate(c(harvest_point,harvest_timing),
+#            .after = variety) %>% 
+#   dplyr::select(-c(X,code,datetime)) -> dat6
+
+
+dat6 <- dat5
   
 dat6 %>% 
   group_by(year,site,
@@ -157,7 +165,7 @@ dat6 %>%
   tally()
 
 dat6 %>% 
-  group_by(year,site,harvest_point, harvest_timing,cut) %>% 
+  group_by(year,site,harvest_point,cut) %>% 
   tally() %>% 
   print(n=100)
 
@@ -187,6 +195,7 @@ dat6 %>%
 # I tidied stuff in excel
 
 read.csv("kodu_nirData_15Feb2023.csv") -> dat5
+
 
 # writing files to copy and paste into the google sheet
 # https://docs.google.com/spreadsheets/d/1h_qAGjXJ6xGUbuScg_jzztqhuiOTQbL6AlZx9VFHuKA/edit?usp=sharing

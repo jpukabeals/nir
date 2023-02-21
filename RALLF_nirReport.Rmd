@@ -9,41 +9,72 @@ editor_options:
   chunk_output_type: console
 ---
 
-# To do
-need to figure out dataset design
+# Review of experiment
 
-date plots data
+Experiment was seeded in spring 2021, reducing the number of cuttings that could be taken in 2021. 
 
-year plots cut_num harvest_point
+There was a drought in 2022, reducing the number of cuttings that could be taken in 2022. 
 
-plot treatments
+For 2021, The first cutting was in July2021. The 35-day cutting treatment (sometimes called the 5-cut system), was harvested 3 times in 2021. The 45-day cutting treatment (sometimes called the 4-cut system), was harvested 2 times in 2021. 
+
+For 2022, the first cutting was in May2022. The 35-day cutting treatment was harvested 4 times in 2022. The 45-day cutting treatment was harvested 3 times in 2022. 
+
+There are 6 varieties of alfalfa * 4 reps = 24 plots for a given cutting intensity at a given site.
+
+# Review of data organization
+
+Different people are entering different types of data (yield, NIR). The naming schemes are unfortunately different, but we want the person entering the data to remain consistent doing what they decided made the most sense to them. 
+
+We assume future data will be entered into the datasheets with the same format. 
+
+Here I am designing keys to get the different dataflows to talk together
+
+These are the following treatments
+
+variety = 6 levels
+intensity = 2 levels (35 or 45 day) OR (5 cut or 4 cut)
+plot = contains the varietyXintensityXsiteXrep = 6X2X2X4 = 96 unique plots
+harvest_point = plots are harvested multiple times per year at differing intensities, a harvest point represents the unique date of a harvest at a site
+cutting_number = which cutting of a given plot, resetting each year
+
+2021 half were harvested 3X and half 2X = `r 96/2*3+96/2*2`
+
+2022 half were harvested 4X and half 3X = `r 96/2*4+96/2*3`
+
+so we expect 576 datapoints 
+
+We have 506 data points
 
 
-2021 had 2 cuts and 3 cuts, starting in july
-2022  had 3 cuts or 4 cuts
 
-2021
-1st cut
-2nd cut 1
-2nd cut 2
-3rd cut
 
-2022
-1st cut 1
-1st cut 2
-2nd cut 1
-2nd cut 2
-3rd cut 1
-3rd cut 2
-4th cut 1
+We are designing keys within the markdown document to make these sheets talk with eachother
 
+Rather than change datasheets, we want to keep on filling datasheets as they are
+
+## NIR
+For NIR output, we get a code and NIR data.
+
+We have a compiled sheet where all information associated with a code is dumped
+
+We pull in all the information associated with the codes into the NIR data sheet, then select for rows that contain the word RALLF in one of the ID columns
+
+We go into excel and line up the ID columns and then export that file, this is our working NIR RALLF data.
+
+One problem was that some RALLF data was saved as a date "07/16/2021" and imported as a serial number that could not be back converted. I could've added in a manual harvest timepoint, but the key I was pulling off of was static. 
+
+Now, the most important ID we need is plot and date. From this information, we can pull in all the info we need. Another work around is plot, year, cutting number. But the only time point data we have is plot, year, harvest_point. 
+
+But some had dates that were not imported correctly into R
 
 
 
 ```{r, echo=F, include=F}
 knitr::opts_chunk$set(
   echo = F,
-  warning = F
+  warning = F, 
+  message = F,
+  comment = NA
 )
 
 library(tidyverse)
@@ -51,16 +82,12 @@ library(tidyr)
 
 ```
 
-
-```{r,cache=F, include=F}
+```{r, include=F}
 source("nir_importTidy_15Feb2023.R")
 
 ```
 
-\newpage
-# What we expect
-
-```{r}
+```{r include=F}
 
 
 c(
@@ -96,7 +123,7 @@ expand_grid(
             ) -> df1
   
 
-# df1 %>% 
+# %>% %>% 
 #   filter(year != "2021" | cut != "4") %>% 
 #   filter(year != "2021" | cut != "3" | intensity != "45-day") %>% 
 #   filter(year != "2022" | cut != "4" | intensity != "45-day") %>% 
@@ -168,11 +195,6 @@ df2 %>%
 
 ```
 
-
-
-\newpage
-# What we have
-
 ```{r}
 
 # unique(dat6$harvest_point)
@@ -188,45 +210,229 @@ c(
 # 2021
 "",
 "",
+"",
+"",
+"2021-07-16",
 "2021-07-16",
 "",
+"",
+"2021-08-20",
 "2021-08-20",
 "2021-09-01",
-"",
+"2021-09-01",
 # 2022
-unique(as.character(df2$date))[5:11]
+unique(as.character(df2$date))[5:6],
+rep(unique(as.character(df2$date))[7:11],each=2)
 ) -> dates2
 
 expand_grid(
   year = rev(unique(dat6$year)),
-  harvest_point = unique(dat6$harvest_point)
+  harvest_point = unique(dat6$harvest_point),
+  site = c("rosemount","st paul")
 ) %>% 
-  # print()
+  # print(n=100)
   mutate(date = dates2) -> df3
 
 
-
 ```
-
 
 ```{r}
 dat6 %>% 
   # filter(year==2021) %>% 
   group_by(year,site,
            harvest_point,
-           harvest_timing,cut) %>% 
+           # harvest_timing,
+           cut) %>% 
   tally() %>% 
   left_join(df3) %>% 
-  ungroup() %>%
-  # dplyr::select(-c(harvest_point,harvest_timing)) %>% 
-  # dplyr::select(c(date, site, cut,n)) %>% 
-  knitr::kable(
-    caption="2021 observed forage quality data"
-  )
+  as_tibble() %>% 
+  mutate(cut2 = str_sub(cut,1,1)) %>% 
+  mutate(intensity = fct_recode(cut2,
+                                "35-day" = "5",
+                                "45-day" = "4")) %>% 
+  dplyr::select(c(date, site, intensity,n)) %>%
+  rename(n_observed = n) %>% 
+  mutate(date = as.POSIXct(date,
+                           format="%Y-%m-%d")) %>% 
+  left_join(df2,.) %>% 
+  as_tibble() %>% 
+  rename(n_expected = n) %>% 
+  relocate(n_expected, .before=n_observed) %>% 
+  dplyr::select(-year) %>% 
+  relocate(site,intensity,cut,.after=date) %>% 
+  arrange(date) -> tab1
+
+
+```
+
+```{r df_dateHarvestCut}
+c(1,seq(1,8,1)) -> harvest_point
+c(rep(c("35-day","45-day"),4),"35-day") -> intensity
+c(rep(1:4,each=2),5) -> cutting_number
+
+seq(2021,2025,1) -> year
+c("st paul", "rosemount") -> site
+
+# add in the dates associated with the harvest point value, see table at bottom of chunk
+c(
+  "2021-07-16",
+  "2021-07-16",
+  "2021-07-16",
+  "2021-07-16",
+  "2021-08-20",
+  "2021-08-20",
+  "2021-09-01",
+  "2021-09-01",
+  "2021-10-18",
+  "2021-10-18",
+
+  
+  "2022-05-23",
+  "2022-05-24",
+  "2022-05-23",
+  "2022-05-24",
+
+  "2022-06-29",
+  "2022-06-29",
+  "2022-07-12",
+  "2022-07-12",
+  "2022-08-02",
+  "2022-08-02",
+  "2022-08-22",
+  "2022-08-22",
+  "2022-09-07",
+  "2022-09-07"
+) -> dates3
+
+tibble(
+  harvest_point,
+  intensity,
+  cutting_number) %>% 
+  mutate(aproximate_days_after_first_cut = as.numeric(str_sub(intensity,1,2))*(cutting_number-1)) %>% 
+  expand_grid(year,.,site) %>% 
+  filter(year<2023) %>% 
+  filter(year!= 2022 | harvest_point<7) %>% 
+  filter(year!= 2021 | harvest_point<5) %>% 
+  mutate(dates = dates3) -> df_dateHarvestCut
+
+```
+
+
+```{r playing around}
+
+
+dat6 %>% 
+  # glimpse()
+  group_by(site,cut) %>% 
+  distinct(plot) -> df_siteIntensityPlots
+
 ```
 
 
 
+```{r include=F}
+
+# dat6 is data
+# harvest_point
+# site
+# year
+
+df_dateHarvestCut %>% 
+  colnames()
+# harvest_point
+# site
+# year
+
+# we want to take df_dateHarvestCut and add in the quality data where we have data
+
+df_dateHarvestCut %>% 
+  dim()
+# there are 24 rows, each row should have n=24
+# we should have 576 data points
+# dat6 is our data, we have 502, what are we missing
+
+# we want to make tab1 opened up, 24 rows per row
+# need to add plots
+
+
+df_dateHarvestCut %>% 
+  left_join(.,dat6) %>% 
+  # dim()
+  dplyr::select(
+    dates, site, intensity, cutting_number, plot,
+    rfq.legume
+  )  %>% 
+  # View()
+  group_by(
+    dates, site, intensity, cutting_number,
+  ) %>% 
+  tally()
+  # print(n=100)
+# we have repeating data, n=24 for a given date*site*intensity
+  
+dat6 %>% 
+  # glimpse()
+  group_by(harvest_point,year,site,cut) %>% 
+  # right_join(df_dateHarvestCut) %>% 
+  # group_by(dates,site,intensity) %>% 
+  tally()
+  
+```
+
+primary datasets
+df2 = date connected to cut number, site year intensity
+df3 = date connected to harvest_point (1:6) site year, which is used in a lot of yield data
+
+dat7 = connects date to plot site and treatments
+dat6 = connects forage quality data with plot site-year and treatments
+
+
+\newpage
+# What we expect and what we have
+
+
+```{r}
+tab1 %>% 
+  knitr::kable(
+  caption="Expected and observed forage quality data"
+  )
+```
+
+
+```{r}
+tab1 %>% 
+  mutate(n_observed = replace_na(n_observed,0)) %>% 
+  mutate(missing = n_expected-n_observed) %>% 
+  arrange(desc(missing)) %>% 
+  filter(missing >0) %>% 
+  knitr::kable(
+    caption = "Missing forage quality data"
+  )
+
+```
+
+
+
+Does our missing data agree with what we have
+
+```{r}
+tab1 %>% 
+  # glimpse()
+  summarise(observed = sum(n_observed,na.rm = T))
+
+
+```
+
+
+\newpage
 # What we are seeing
+
+```{r}
+
+
+```
+
+
+
 
 
