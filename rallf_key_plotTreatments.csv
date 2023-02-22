@@ -1,0 +1,97 @@
+"plot","site","variety","intensity","rep"
+1101,"rosemount","HX4","45-day",1
+1102,"rosemount","RR3","45-day",1
+1103,"rosemount","HX5","45-day",1
+1104,"rosemount","RR4","45-day",1
+1105,"rosemount","RR5","45-day",1
+1106,"rosemount","HX3","45-day",1
+1107,"rosemount","RR4","35-day",1
+1108,"rosemount","HX5","35-day",1
+1109,"rosemount","HX4","35-day",1
+1110,"rosemount","RR3","35-day",1
+1111,"rosemount","RR5","35-day",1
+1112,"rosemount","HX3","35-day",1
+1201,"rosemount","RR5","45-day",2
+1202,"rosemount","RR4","45-day",2
+1203,"rosemount","RR3","45-day",2
+1204,"rosemount","HX4","45-day",2
+1205,"rosemount","HX5","45-day",2
+1206,"rosemount","HX3","45-day",2
+1207,"rosemount","HX5","35-day",2
+1208,"rosemount","RR5","35-day",2
+1209,"rosemount","HX3","35-day",2
+1210,"rosemount","HX4","35-day",2
+1211,"rosemount","RR3","35-day",2
+1212,"rosemount","RR4","35-day",2
+1301,"rosemount","HX4","35-day",3
+1302,"rosemount","RR3","35-day",3
+1303,"rosemount","RR5","35-day",3
+1304,"rosemount","HX3","35-day",3
+1305,"rosemount","HX5","35-day",3
+1306,"rosemount","RR4","35-day",3
+1307,"rosemount","RR3","45-day",3
+1308,"rosemount","HX4","45-day",3
+1309,"rosemount","HX3","45-day",3
+1310,"rosemount","RR4","45-day",3
+1311,"rosemount","RR5","45-day",3
+1312,"rosemount","HX5","45-day",3
+1401,"rosemount","HX4","45-day",4
+1402,"rosemount","HX5","45-day",4
+1403,"rosemount","RR4","45-day",4
+1404,"rosemount","RR3","45-day",4
+1405,"rosemount","HX3","45-day",4
+1406,"rosemount","RR5","45-day",4
+1407,"rosemount","RR3","35-day",4
+1408,"rosemount","HX4","35-day",4
+1409,"rosemount","RR4","35-day",4
+1410,"rosemount","HX3","35-day",4
+1411,"rosemount","RR5","35-day",4
+1412,"rosemount","HX5","35-day",4
+2101,"st paul","HX3","45-day",1
+2102,"st paul","RR5","45-day",1
+2103,"st paul","RR3","45-day",1
+2104,"st paul","HX5","45-day",1
+2105,"st paul","HX4","45-day",1
+2106,"st paul","RR4","45-day",1
+2107,"st paul","RR3","35-day",1
+2108,"st paul","HX3","35-day",1
+2109,"st paul","HX4","35-day",1
+2110,"st paul","HX5","35-day",1
+2111,"st paul","RR4","35-day",1
+2112,"st paul","RR5","35-day",1
+2201,"st paul","HX4","45-day",2
+2202,"st paul","RR3","45-day",2
+2203,"st paul","RR4","45-day",2
+2204,"st paul","HX5","45-day",2
+2205,"st paul","HX3","45-day",2
+2206,"st paul","RR5","45-day",2
+2207,"st paul","HX4","35-day",2
+2208,"st paul","HX5","35-day",2
+2209,"st paul","RR3","35-day",2
+2210,"st paul","RR4","35-day",2
+2211,"st paul","RR5","35-day",2
+2212,"st paul","HX3","35-day",2
+2301,"st paul","HX4","35-day",3
+2302,"st paul","HX5","35-day",3
+2303,"st paul","HX3","35-day",3
+2304,"st paul","RR5","35-day",3
+2305,"st paul","RR4","35-day",3
+2306,"st paul","RR3","35-day",3
+2307,"st paul","HX4","45-day",3
+2308,"st paul","RR4","45-day",3
+2309,"st paul","HX3","45-day",3
+2310,"st paul","RR3","45-day",3
+2311,"st paul","RR5","45-day",3
+2312,"st paul","HX5","45-day",3
+2401,"st paul","RR5","45-day",4
+2402,"st paul","RR3","45-day",4
+2403,"st paul","HX4","45-day",4
+2404,"st paul","HX5","45-day",4
+2405,"st paul","RR4","45-day",4
+2406,"st paul","HX3","45-day",4
+2407,"st paul","HX3","35-day",4
+2408,"st paul","RR3","35-day",4
+2409,"st paul","HX4","35-day",4
+2410,"st paul","RR5","35-day",4
+2411,"st paul","RR4","35-day",4
+2412,"st paul","HX5","35-day",4
