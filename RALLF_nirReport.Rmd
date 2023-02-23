@@ -9,41 +9,37 @@ editor_options:
   chunk_output_type: console
 ---
 
-# To do
+### To do
 
-Pull in lignin data
+Update this report after we finish scanning 2022 data
 
-# Review of activities 
+Pull in lignin data from NIRS scanning?
 
-Experiment was seeded in spring 2021, reducing the number of cuttings that could be taken in 2021. 
+### Discussion topics
 
-There was a drought in 2022, reducing the number of cuttings that could be taken in 2022. 
+Do we trust these predicted values?
 
-For 2021, The first cutting was in July2021. The 35-day cutting treatment (sometimes called the 5-cut system), was harvested 3 times in 2021. The 45-day cutting treatment (sometimes called the 4-cut system), was harvested 2 times in 2021. 
+Why is the RFV prediction so high for alfalfa? Is it a mistake with the equation being used? Is it because the ADF values are so low? And if so, why are the ADF values so low? Is is because of the hail storm and then when forage quality samples were taken people put more leaves in the bags then stems?
 
-For 2022, the first cutting was in May2022. The 35-day cutting treatment was harvested 4 times in 2022. The 45-day cutting treatment was harvested 3 times in 2022. 
+### Data availability
 
-# Review of experimental design
+Need to make a new RALLF NIRS repository
 
-variety = 6 levels
+Files and dependencies
 
-intensity = 2 levels (35 or 45 day) OR (5 cut or 4 cut)
+rallf_keys.R
+"rallf_key_plotTreatments.csv"
+"rallf_key_harvestCode.csv"
+"rallf_key_codeHarvest.csv"
 
-plot = contains the varietyXintensityXsiteXrep = 6X2X2X4 = 96 unique plots
 
-cut = the sequential cutting of that plot. first cut is 1, second cut is 2
+rallf_nir_22Feb2023.R
+"functions_nir.R"
+"RALLF_nirData_20Feb2023.csv"
 
-harvest_code = numerical designation within a year of a unique siteXintensityXcut
+RALLF_nirReport.Rmd
+"alfalfa_forageQuality_expectedValues.csv"
 
-There are 6 varieties of alfalfa * 4 reps = 24 plots for a given cutting intensity at a given site.
-
-2021 half were harvested 3X and half 2X = `r 96/2*3+96/2*2`
-
-2022 half were harvested 4X and half 3X = `r 96/2*4+96/2*3`
-
-so we expect 576 datapoints 
-
-We have 506 data points
 
 
 ```{r, echo=F, include=F}
@@ -58,6 +54,8 @@ library(tidyverse)
 library(tidyr)
 
 rm(list = ls())
+
+theme_set(theme_bw())
 
 ```
 
@@ -132,12 +130,9 @@ dat2 %>%
 
 ```
 
-
 As seen in tables, we have missing 24+24+1+14+22 data points. 
 The two sets of 24 data points are for the first cut at rosemount in 2022, which have not been scanned as of 15Feb2023. 
-The remaining missing data were also not scanned and is expected were discarded due to mold. 
-
-With the exception of a cutting not scanned yet and some samples molded, we have a fully accounted for dataset. 
+The remaining missing data may have been tossed due to mold. 
 
 \newpage
 # Preliminary analysis of data
@@ -157,13 +152,13 @@ dat5 %>%
 
 ```
 
-# Predicted forage quality parameters by NIRS
+## Predicted forage quality parameters by NIRS
 
-We are predicting alfalfa forage quality parameters using near infrared red scanning with a generalist equation designed for all hay. Some labs use an alfalfa equation and some labs have different alfalfa equations for conventional and reduced lignin alfalfa as there are sometimes discrepencies. All predictions should be validated with wet chemistry, though even if inaccurate can be useful in estimating relative differences between treatments. 
+We are predicting alfalfa forage quality parameters using near infrared red scanning with a generalist equation designed for all hay. Some labs use an alfalfa equation and some labs have different alfalfa equations for conventional vs. reduced lignin alfalfa. All predictions should be validated with wet chemistry, though NIRS predictions without recent validation can still be useful in  estimating relative differences between treatments. 
 
 Soil contamination can also cause issues with forage quality predictions. 
 
-Expected forage quality parameters for alfalfa are easy to obtain for CP ADF NDF and RFV, they are not easy to obtain for RFQ. In general, I found that RFQ can range from 50 to 250, with most data between 100 and 200 and an average of 150. 
+Expected forage quality parameters for alfalfa were easy to obtain for CP ADF NDF and RFV, they were not easy to obtain for RFQ. In general, I found that RFQ can range from 50 to 250, with most data between 100 and 200 and an average of 150. 
 
 
 
@@ -460,9 +455,6 @@ dat1 %>%
 ```
 
 
-
-
-
 \newpage
 # Histograms
 
@@ -519,5 +511,34 @@ dat1 %>%
 
 We expect an NDF of around 40%, we observed an NDF of `r round(mean(dat1$NDF),0)`
 
+\newpage
+# Analysis
+
+```{r echo=T}
+
+dat1 %>% 
+  lm(
+    rfq.legume~site*year*variety*intensity*cut,.
+  ) %>% 
+  anova() %>%
+  filter(`Pr(>F)` < 0.05)
+# site:year:intensity
+# year:intensity:cut
+
+# no effect from variety
+# some effect from intensity
+
+```
 
 
+\newpage
+```{r}
+dat1 %>% 
+  ggplot(aes(cut,rfq.legume,
+             col=intensity)) +
+  stat_summary() +
+  facet_wrap(~site*year) +
+  labs(y="RFQ")
+```
+
+Similar pattern across years and sites; RFQ is similar for the first cut and then the second cut the RFQ is lower for the 45-day cuts than the 35-day cuts. However, we are still missing some data and will collect more data. 
