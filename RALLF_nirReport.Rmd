@@ -153,7 +153,94 @@ dat5 %>%
 
 ```
 
-# Predicted forage quality parameters
+# Predicted forage quality parameters by NIRS
+
+We are predicting alfalfa forage quality parameters using near infrared red scanning with a generalist equation designed for all hay. Some labs use an alfalfa equation and some labs have different alfalfa equations for conventional and reduced lignin alfalfa as there are sometimes discrepencies. All predictions should be validated with wet chemistry, though even if inaccurate can be useful in estimating relative differences between treatments. 
+
+Soil contamination can also cause issues with forage quality predictions. 
+
+Expected forage quality parameters for alfalfa are easy to obtain for CP ADF NDF and RFV, they are not easy to obtain for RFQ. In general, I found that RFQ can range from 50 to 250, with most data between 100 and 200 and an average of 150. 
+
+
+
+```{r Dairyland predicted values}
+c(
+  "CP",
+  "ADF",
+  "NDF",
+  "Lignin"
+) -> prmtr
+
+c(
+  20,
+  31,
+  6,
+  38
+) -> mdn
+
+c(
+  14,
+  20,
+  4,
+  25
+) -> mn
+
+c(
+  26,
+  43,
+  8,
+  52
+) -> mx
+
+tibble(
+  prmtr,
+  mdn,
+  mn,
+  mx
+) %>% 
+  mutate(
+    source="dairyland labs",
+    .before=prmtr
+  ) %>% 
+  mutate(range = paste(mn,mx,sep = "-")) %>% 
+  rename(
+    median = mdn,
+    parameter = prmtr
+  ) %>% 
+  dplyr::select(-c(mn,mx,source)) %>% 
+  rename_all(str_to_title) %>% 
+  knitr::kable(
+    caption = "Forage quality expected value ranges from Dairyland Labs"
+  )
+
+```
+
+```{r predicted ranges aggregated}
+
+# https://docs.google.com/spreadsheets/d/1AqVcEwv3PlHVcR5Vv5UqUliUcqOZj6dNMvK-FAArONg/edit#gid=1646351822
+
+read.csv(
+  "alfalfa_forageQuality_expectedValues.csv"
+) -> dat_qual
+
+
+dat_qual %>% 
+  rename(
+    "Grade" = quality.category,
+  ) %>% 
+  rename_all(str_to_title) %>% 
+  rename_with(
+    str_to_upper,
+    4:8
+  ) %>% 
+  knitr::kable(
+    caption= "Forage quality parameter expected ranges from UMN, SDSU and University of Georgia"
+  )
+
+```
+
+\newpage
+# Figures
 
 ```{r}
 
@@ -161,7 +248,8 @@ dat1 %>%
   ggplot(aes(CP)) +
   stat_bin() +
   labs(
-    x="Crude protein (% dry matter)"
+    x="Crude protein (% dry matter)",
+    caption = "CP range is 10-20% for alfalfa"
   )
 
 dat1 %>% 
@@ -170,6 +258,9 @@ dat1 %>%
 
 dat1 %>% 
   ggplot(aes(NDF)) +
-  stat_bin() 
+  stat_bin()+
+  labs(
+    caption = "NDF range is around 40 for alfalfa"
+  )
 ```
 
