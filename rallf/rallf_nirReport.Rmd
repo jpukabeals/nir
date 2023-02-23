@@ -7,6 +7,13 @@ output:
   pdf_document
 editor_options: 
   chunk_output_type: console
+
+format: 
+  pdf: 
+    colorlinks: false
+    include-in-header: 
+      text: |
+        \usepackage{hyperref}
 ---
 
 ### To do
@@ -21,26 +28,12 @@ Do we trust these predicted values?
 
 Why is the RFV prediction so high for alfalfa? Is it a mistake with the equation being used? Is it because the ADF values are so low? And if so, why are the ADF values so low? Is is because of the hail storm and then when forage quality samples were taken people put more leaves in the bags then stems?
 
+Why is neutral detergent digestibility so low? We need to be skeptical of RFQ so long as we are skeptical of NDFD. 
+
+
 ### Data availability
 
-Need to make a new RALLF NIRS repository
-
-Files and dependencies
-
-rallf_keys.R
-"rallf_key_plotTreatments.csv"
-"rallf_key_harvestCode.csv"
-"rallf_key_codeHarvest.csv"
-
-
-rallf_nir_22Feb2023.R
-"functions_nir.R"
-"RALLF_nirData_20Feb2023.csv"
-
-RALLF_nirReport.Rmd
-"alfalfa_forageQuality_expectedValues.csv"
-
-
+\href{https://github.com/jpukabeals/nir/tree/main/rallf}{Click Me for Github Repository}
 
 ```{r, echo=F, include=F}
 knitr::opts_chunk$set(
@@ -60,14 +53,16 @@ theme_set(theme_bw())
 ```
 
 ```{r, include=F}
+setwd("~/R projects/nir/rallf")
+
 source("rallf_keys.R")
 
 source("rallf_nir_22Feb2023.R")
 
 ```
 
-
 \newpage
+
 # Data we have
 
 ```{r}
@@ -130,12 +125,9 @@ dat2 %>%
 
 ```
 
-As seen in tables, we have missing 24+24+1+14+22 data points. 
-The two sets of 24 data points are for the first cut at rosemount in 2022, which have not been scanned as of 15Feb2023. 
-The remaining missing data may have been tossed due to mold. 
+As seen in tables, we have missing 24+24+1+14+22 data points. The two sets of 24 data points are for the first cut at rosemount in 2022, which have not been scanned as of 15Feb2023. The remaining missing data may have been tossed due to mold.
 
 \newpage
-# Preliminary analysis of data
 
 ```{r}
 
@@ -148,19 +140,15 @@ dat5 %>%
   left_join(key2) %>% 
   left_join(key1) -> dat1
 
-
-
 ```
 
-## Predicted forage quality parameters by NIRS
+# Predicting forage quality parameters by NIRS
 
-We are predicting alfalfa forage quality parameters using near infrared red scanning with a generalist equation designed for all hay. Some labs use an alfalfa equation and some labs have different alfalfa equations for conventional vs. reduced lignin alfalfa. All predictions should be validated with wet chemistry, though NIRS predictions without recent validation can still be useful in  estimating relative differences between treatments. 
+We are predicting alfalfa forage quality parameters using near infrared scanning with a generalist equation designed for all hay. Some labs use an alfalfa equation and some labs have different alfalfa equations for conventional vs. reduced lignin alfalfa. All predictions should be validated with wet chemistry, though NIRS predictions without recent validation can still be useful in estimating relative differences between treatments.
 
-Soil contamination can also cause issues with forage quality predictions. 
+Soil contamination can also cause issues with forage quality predictions.
 
-Expected forage quality parameters for alfalfa were easy to obtain for CP ADF NDF and RFV, they were not easy to obtain for RFQ. In general, I found that RFQ can range from 50 to 250, with most data between 100 and 200 and an average of 150. 
-
-
+Expected forage quality parameters for alfalfa were easy to obtain for CP ADF NDF and RFV, they were not easy to obtain for RFQ. In general, I found that RFQ can range from 50 to 250, with most data between 100 and 200 and an average of 150.
 
 ```{r Dairyland predicted values}
 c(
@@ -238,7 +226,6 @@ dat_qual %>%
 
 ```
 
-
 ```{r}
 
 dat_qual %>% 
@@ -296,10 +283,9 @@ as_tibble(cbind(nms = names(d2), t(d2))) %>%
 
 ```
 
-
-
 \newpage
-# Tables
+
+# Summary tables
 
 ```{r FQ by rep}
 
@@ -352,7 +338,6 @@ dat1 %>%
 
 ```
 
-
 ```{r FQ by year}
 dat1 %>% 
   group_by(year) %>% 
@@ -377,7 +362,6 @@ dat1 %>%
     caption = "Forage quality by year"
   )
 ```
-
 
 ```{r FQ by cut}
 dat1 %>% 
@@ -428,6 +412,7 @@ dat1 %>%
 
 ```
 
+\newpage
 ```{r FQ by variety}
 
 dat1 %>% 
@@ -454,8 +439,8 @@ dat1 %>%
 
 ```
 
-
 \newpage
+
 # Histograms
 
 ```{r RFQ}
@@ -484,7 +469,6 @@ dat1 %>%
 
 We expect an RFV of around 150, we observed an RFV of `r round(mean(dat1$rfv),0)`
 
-
 ```{r}
 dat1 %>% 
   ggplot(aes(CP)) +
@@ -511,8 +495,21 @@ dat1 %>%
 
 We expect an NDF of around 40%, we observed an NDF of `r round(mean(dat1$NDF),0)`
 
+
+```{r}
+dat1 %>% 
+  ggplot(aes(NDFD)) +
+  stat_bin()
+
+```
+
+For neutral detergent digestibility over 48 hours, we expect values near 70%. This parameter has typically shown high mahalanoibis distances in the Perten and this equation needs to be improved. An issue with this equation should not impact the RFV prediction, along with ADF, NDF and CP. It will impact the RFQ prediction. 
+
 \newpage
+
 # Analysis
+
+## Relative forage quality
 
 ```{r echo=T}
 
@@ -530,8 +527,8 @@ dat1 %>%
 
 ```
 
-
 \newpage
+
 ```{r}
 dat1 %>% 
   ggplot(aes(cut,rfq.legume,
@@ -541,4 +538,154 @@ dat1 %>%
   labs(y="RFQ")
 ```
 
-Similar pattern across years and sites; RFQ is similar for the first cut and then the second cut the RFQ is lower for the 45-day cuts than the 35-day cuts. However, we are still missing some data and will collect more data. 
+Similar pattern across years and sites; RFQ is similar for the first cut and then the second cut the RFQ is lower for the 45-day cuts than the 35-day cuts. 
+
+Why is variance so low? I can barely see error bars
+
+\newpage
+## Crude protein
+
+```{r echo=T}
+
+dat1 %>% 
+  lm(
+    CP~site*year*variety*intensity*cut,.
+  ) %>% 
+  anova() %>%
+  filter(`Pr(>F)` < 0.05)
+# 4-way interaction
+
+# no effect from variety
+# some effect from intensity
+
+```
+
+\newpage
+
+```{r}
+dat1 %>% 
+  ggplot(aes(cut,CP,
+             col=intensity)) +
+  stat_summary() +
+  facet_wrap(~site*year) +
+  labs(y="CP")
+```
+
+Similar pattern across years and sites, same as RFQ; CP is similar for the first cut and then the second cut the CP is lower for the 45-day cuts than the 35-day cuts. 
+
+Why is variance so low? I can barely see error bars
+
+
+\newpage
+## Relative feed value and ADF
+
+RFV is the only parameter where we are outside of our expected range. We expect around 150 and we are averaging 200. We have some RFV values over 300. 
+
+This may be due to an issue with the equation
+
+Let's look at the RFV equation I used
+
+```{r}
+print(calc.rfq.rfv.legume)
+```
+
+So I used ...
+
+Digestible dry matter\
+$DDM.rfv = 88.9-(0.779*ADF)$
+
+Dry matter intake\
+$DMI.rfv = 120/NDF$
+
+Relative Forage Value\
+$RFV = (88.9-(0.779*ADF))*(120/NDF)/1.29$
+
+These equations are correct. 
+
+
+```{r testing RFV equation, include=F}
+
+# low range of fiber
+ADF <- 27
+NDF <- 34
+# RFV was 185
+
+ADF <- 29
+NDF <- 36
+# RFV was 171
+
+# expected values
+ADF <- 30
+NDF <- 40
+# RFV=150
+
+# observed values
+ADF <- 24
+NDF <- 33
+# RFV = 200
+
+# ratio of ADF:NDF weird?
+33/24
+# 1:1.3
+40/30
+# 1:1.3
+
+# the ratio of ADF to NDF is what we expect
+# for 1ADF there's 1.3 NDF
+
+(88.9-(0.779*ADF))*(120/NDF)/1.29
+```
+
+Let's look at the samples with the highest RFV values
+
+```{r}
+dat1 %>% 
+  arrange(desc(rfv)) %>% 
+  slice(1:5) %>% 
+  dplyr::select(
+    site,year,intensity,cut,variety,rep,
+    CP,ADF,NDF,NDFD,rfv,rfq.legume
+  ) %>% 
+  # print()
+  mutate(
+    across(
+      7:12,
+      ~round(.x,0)
+    )
+  ) %>% 
+  knitr::kable(
+    caption = "The samples with the highest estiamted relative feed value"
+  )
+  
+```
+
+The forage samples with the highest RFV are from st paul in 2022. The ADF is 16% and the NDF is 20%. A forage sample with these values would have a relative feed value of 355, so the equation is not incorrect. The question is whether alfalfa can be this high quality. 
+
+Can an alfalfa sample be 16% ADF and 20% NDF? 
+
+It's notable that the crude protein is also very high, 29%, where we would normally expect 20%. This supports the idea that this was young vegetative leafy alfalfa. 
+
+It seems very possible that our predicted ADF and NDF values simply need a bias adjustment. If this is the case, they can still be used to determine relative differences between treatments, but will need a wet chemistry calibration before they can be used to determine the actual ADF or NDF values. 
+
+\newpage
+## NDFD
+
+We predict neutral detergent fiber digestibility of 48 hours. We expect a range between 40 and 80, but we are seeing values around 15.
+
+```{r}
+
+dat1 %>% 
+  # glimpse()
+  summarise(
+    max(NDFD),
+    min(NDFD),
+    median(NDFD)
+  ) %>% 
+  knitr::kable(
+    caption = "Neutral detergent digestibility ranged from 4 to 31%. This is very low and should be validated with wet chemistry"
+  )
+```
+
+
+
+
