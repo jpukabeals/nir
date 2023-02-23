@@ -9,6 +9,10 @@ editor_options:
   chunk_output_type: console
 ---
 
+# To do
+
+Pull in lignin data
+
 # Review of activities 
 
 Experiment was seeded in spring 2021, reducing the number of cuttings that could be taken in 2021. 
@@ -174,22 +178,22 @@ c(
 c(
   20,
   31,
-  6,
-  38
+  38,
+  6
 ) -> mdn
 
 c(
   14,
   20,
-  4,
-  25
+  35,
+  4
 ) -> mn
 
 c(
   26,
   43,
-  8,
-  52
+  52,
+  8
 ) -> mx
 
 tibble(
@@ -210,7 +214,7 @@ tibble(
   dplyr::select(-c(mn,mx,source)) %>% 
   rename_all(str_to_title) %>% 
   knitr::kable(
-    caption = "Forage quality expected value ranges from Dairyland Labs"
+    caption = "Expected forage quality ranges from Dairyland Labs"
   )
 
 ```
@@ -234,33 +238,286 @@ dat_qual %>%
     4:8
   ) %>% 
   knitr::kable(
-    caption= "Forage quality parameter expected ranges from UMN, SDSU and University of Georgia"
+    caption= "Expected forage quality ranges from UMN, SDSU, Univeristy of Georgia and Dairyland"
   )
 
 ```
 
-\newpage
-# Figures
 
 ```{r}
 
+dat_qual %>% 
+  dplyr::filter(stage=="all") %>% 
+  dplyr::select(-c(maturity,stage,quality.category)) %>% 
+  rename_all(toupper) %>% 
+  mutate(type = "expected") -> d1
+
+
 dat1 %>% 
-  ggplot(aes(CP)) +
-  stat_bin() +
-  labs(
-    x="Crude protein (% dry matter)",
-    caption = "CP range is 10-20% for alfalfa"
+  summarise(
+    across(
+      c(CP,ADF,NDF,rfv,rfq.legume),
+      mean
+    )
+  ) %>% 
+  rename(
+    RFQ = rfq.legume,
+    RFV = rfv
+  ) %>% 
+  mutate_all(
+    ~round(.x,0)
+  ) %>% 
+  mutate(
+    type = "observed"
+  ) %>% 
+  mutate_all(as.character) %>% 
+  bind_rows(d1) %>% 
+  relocate(type,.before=CP) -> d2 
+
+# d2 %>% 
+#   knitr::kable()
+
+c(
+  20,
+  30,
+  40,
+  150,
+  150
+) -> expctd
+
+as_tibble(cbind(nms = names(d2), t(d2))) %>% 
+  rename(
+    Observed = V2,
+    `Expected Range` = V3,
+    `Forage Quality Parameter` = nms
+  ) %>% 
+  slice(-1) %>% 
+  bind_cols(expctd) %>% 
+  rename(Expected = "...4") %>% 
+  relocate(Expected,.after=Observed) %>% 
+  knitr::kable(
+    caption = "Observed vs. expected forage quality in RALLF"
   )
 
-dat1 %>% 
-  ggplot(aes(ADF)) +
-  stat_bin() 
+```
+
+
+
+\newpage
+# Tables
+
+```{r FQ by rep}
 
 dat1 %>% 
-  ggplot(aes(NDF)) +
-  stat_bin()+
-  labs(
-    caption = "NDF range is around 40 for alfalfa"
+  group_by(rep) %>% 
+  rename_with(
+    .cols = c(1:3, 11:15),
+    str_to_title
+  ) %>% 
+  rename(
+    RFV = rfv,
+    RFQ = rfq.legume
+  ) %>% 
+  summarise(
+    across(c(CP,ADF,NDF,NDFD,RFV,RFQ),
+           .fns=mean)
+  ) %>% 
+  mutate(
+    across(c(CP,ADF,NDF,NDFD,RFV,RFQ),
+           .fns=~round(.x,0))
+  ) %>% 
+  knitr::kable(
+    caption = "Forage quality by rep"
+  )
+
+```
+
+```{r FQ by site}
+dat1 %>% 
+  group_by(site) %>% 
+  rename_with(
+    .cols = c(1:3, 11:15),
+    str_to_title
+  ) %>% 
+  rename(
+    RFV = rfv,
+    RFQ = rfq.legume
+  ) %>% 
+  summarise(
+    across(c(CP,ADF,NDF,NDFD,RFV,RFQ),
+           .fns=mean)
+  ) %>% 
+  mutate(
+    across(c(CP,ADF,NDF,NDFD,RFV,RFQ),
+           .fns=~round(.x,0))
+  ) %>% 
+  knitr::kable(
+    caption = "Forage quality by site"
+  )
+
+```
+
+
+```{r FQ by year}
+dat1 %>% 
+  group_by(year) %>% 
+  rename_with(
+    .cols = c(1:3, 11:15),
+    str_to_title
+  ) %>% 
+  rename(
+    RFV = rfv,
+    RFQ = rfq.legume
+  ) %>% 
+  # colnames()
+  summarise(
+    across(c(CP,ADF,NDF,NDFD,RFV,RFQ),
+           .fns=mean)
+  ) %>% 
+  mutate(
+    across(c(CP,ADF,NDF,NDFD,RFV,RFQ),
+           .fns=~round(.x,0))
+  ) %>% 
+  knitr::kable(
+    caption = "Forage quality by year"
   )
 ```
+
+
+```{r FQ by cut}
+dat1 %>% 
+  group_by(cut) %>% 
+  rename_with(
+    .cols = c(1:3, 11:15),
+    str_to_title
+  ) %>% 
+  rename(
+    RFV = rfv,
+    RFQ = rfq.legume
+  ) %>% 
+  summarise(
+    across(c(CP,ADF,NDF,NDFD,RFV,RFQ),
+           .fns=mean)
+  ) %>% 
+  mutate(
+    across(c(CP,ADF,NDF,NDFD,RFV,RFQ),
+           .fns=~round(.x,0))
+  ) %>% 
+  knitr::kable(
+    caption = "Forage quality by cutting"
+  )
+```
+
+```{r FQ by cutting intensity}
+dat1 %>% 
+  group_by(intensity) %>% 
+  rename_with(
+    .cols = c(1:3, 11:15),
+    str_to_title
+  ) %>% 
+  rename(
+    RFV = rfv,
+    RFQ = rfq.legume
+  ) %>% 
+  summarise(
+    across(c(CP,ADF,NDF,NDFD,RFV,RFQ),
+           .fns=mean)
+  ) %>% 
+  mutate(
+    across(c(CP,ADF,NDF,NDFD,RFV,RFQ),
+           .fns=~round(.x,0))
+  ) %>% 
+  knitr::kable(
+    caption = "Forage quality by harvest schedule"
+  )
+
+```
+
+```{r FQ by variety}
+
+dat1 %>% 
+  group_by(variety) %>% 
+  rename_with(
+    .cols = c(1:3, 11:15),
+    str_to_title
+  ) %>% 
+  rename(
+    RFV = rfv,
+    RFQ = rfq.legume
+  ) %>% 
+  summarise(
+    across(c(CP,ADF,NDF,NDFD,RFV,RFQ),
+           .fns=mean)
+  ) %>% 
+  mutate(
+    across(c(CP,ADF,NDF,NDFD,RFV,RFQ),
+           .fns=~round(.x,0))
+  ) %>% 
+  knitr::kable(
+    caption = "Forage quality by variety"
+  )
+
+```
+
+
+
+
+
+\newpage
+# Histograms
+
+```{r RFQ}
+
+dat1 %>% 
+  # colnames()
+  ggplot(aes(rfq.legume)) +
+  stat_bin() +
+  labs(
+    x="RFQ"
+  )
+
+```
+
+We expect an RFQ of around 150, we observed an RFQ of `r round(mean(dat1$rfq.legume),0)`
+
+```{r}
+dat1 %>% 
+  # colnames()
+  ggplot(aes(rfv)) +
+  stat_bin() +
+  labs(
+    x="RFV"
+  )
+```
+
+We expect an RFV of around 150, we observed an RFV of `r round(mean(dat1$rfv),0)`
+
+
+```{r}
+dat1 %>% 
+  ggplot(aes(CP)) +
+  stat_bin() 
+```
+
+We expect a crude protein of around 20%, we observed a CP of `r round(mean(dat1$CP),0)`
+
+```{r}
+dat1 %>% 
+  ggplot(aes(ADF)) +
+  stat_bin()
+
+```
+
+We expect an ADF of around 30%, we observed an ADF of `r round(mean(dat1$ADF),0)`
+
+```{r}
+dat1 %>% 
+  ggplot(aes(NDF)) +
+  stat_bin()
+
+```
+
+We expect an NDF of around 40%, we observed an NDF of `r round(mean(dat1$NDF),0)`
+
+
 
