@@ -5,7 +5,7 @@ source("functions_nir.R")
 
 library(tidyverse)
 
-read.csv("RALLF_nirData_20Feb2023.csv") -> dat5
+read.csv("rallf_nirData_20Feb2023.csv") -> dat5
 
 # fixing st. paul naming issue
 dat5 %>% 
