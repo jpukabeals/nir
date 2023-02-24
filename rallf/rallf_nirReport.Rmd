@@ -698,11 +698,53 @@ dat1 %>%
   dplyr::select(rfv,rfq.legume) %>% 
   cor() %>% 
   corrplot()
+# ok, RFQ and RFV are very positively correlated
 
-d
+dat1 %>% 
+  dplyr::select(rfv,rfq.legume, ADF, NDF,CP,NDFD) %>% 
+  cor() %>% 
+  corrplot()
+# As NDF and ADF increase, so does NDFD, and RFV and RFQ goes down. 
   
 ```
 
+
+### RFQ
+
+Let's see how RFQ values would be if NDFD was near 60 instead of 6.
+
+If they are closer to 200, then this would mean we likely need to bias the NDF and ADF (they are too low) and bias the NDFD (too low as well). When we increase these values, the RFV and RFQ will go down to more normal levels
+
+
+```{r}
+print(calc.rfq.rfv.legume)
+
+```
+
+```{r}
+# rfq.legume=DMI.legume*TDN.legume/1.23,
+# DMI.legume=(120/NDF) + (NDFD - 45) * .374/1350*100,
+# TDN.legume=(NFC*.98)+(CP*.93)+(FA*.97*2.25)+(NDFn*NDFD/100)-7,
+# NFC=100-((0.93*NDF)+CP+EE+Ash),
+# NDFn=NDF*0.93, 
+
+
+NDF <- 30
+CP <- 20
+EE <- 2.05
+Ash <- mean(dat5$Ash)
+FA <- 1.05
+
+NDFD <- mean(dat5$NDFD)
+NDFD <- 7
+
+
+(120/NDF) + (NDFD - 45) * .374/1350*100*(100-((0.93*NDF)+CP+EE+Ash)*.98)+(CP*.93)+(FA*.97*2.25)+(NDF*0.93*NDFD/100)-7/1.23
+
+# this equation seems to be wrong, because it predicts RFQ of 324, but it should be near 130. Not sure what is problem, but RFQ has a problem!
+
+
+```
 
 
 
