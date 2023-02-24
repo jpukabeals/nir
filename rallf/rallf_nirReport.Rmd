@@ -18,31 +18,39 @@ format:
 
 ### To do
 
+Recreate the RFQ equation to understand what will happen to RFQ prediction as NDFD is adjusted
+
 Update this report after we finish scanning 2022 data
 
-Pull in lignin data from NIRS scanning?
+Validate the predicted forage quality parameters with wet chemsity. If machine is underestimating ADF and NDF, this will explain the high RFV values. The NDFD values need to also be validated. We need to consult with a lab familiar with NIRS for both conventional and reduced lignin alfalfa. 
 
-It's weird the RFQ and RFV do not correlate closely. Is this because of the weird NDFD values?
+Pull in lignin data from NIRS scanning?
 
 
 ### Expected results
 
-Alfalfa varieties (HarvXtra) will have lower lignin content and higher NDFD than conventional varieties. 
+Alfalfa varieties (HarvXtra) will have lower lignin content and higher NDFD than conventional varieties. The RFV should be higher for HarvXtra varieties. 
+
+Alfalfa with lower intervals between cuttings (35-day vs 45-day ) will have higher forage quality (RFV, CP).
 
 
 ### Discussion topics
 
-What forage quality comparisons are we making? If we are only making comparisons among alfalfa cuttings, let's use RFV not RFQ. RFQ relies on NDFD, which is much harder to predict with NIRS. There is lot of variability in NDFD in wet chemsity due to variability in rumen fluid composition from donor cows, this variability extends into the NIRS database for NDFD, which reduces the accuracy of the NIRS predictions. RFQ is useful when comparing between mixtures of legumes and grasses, but since we are only making comparisons between alfalfa, RFV allows us to rely on just ADF and NDF, which NIRS performs well at predicting. 
+*RFV vs. RFQ*
 
-What equations are appropiate? Our generalist hay equation is 
+If we are only making comparisons among alfalfa cuttings, let's use RFV not RFQ. RFQ relies on NDFD, which is much harder to predict with NIRS. There is lot of variability in NDFD in wet chemsity due to variability in rumen fluid composition from donor cows, this variability extends into the NIRS database for NDFD, which reduces the accuracy of the NIRS predictions. RFQ is useful when comparing between mixtures of legumes and grasses, but since we are only making comparisons between alfalfa cuttings, RFV allows us to rely on just ADF and NDF, which NIRS performs better at predicting. 
 
+*NIRS predictions*
 
-Do we trust these predicted values?
+Do we trust the predicted values of the NIRS for this experiment?
 
-Why is the RFV prediction so high for alfalfa? Is it a mistake with the equation being used? Is it because the ADF values are so low? And if so, why are the ADF values so low? Is is because of the hail storm and then when forage quality samples were taken people put more leaves in the bags then stems?
+Is the hay equation sufficient for making comparisons between HarvXtra vs. conventional alfalfa forage quality?
 
-Why is neutral detergent digestibility so low? We need to be skeptical of RFQ so long as we are skeptical of NDFD. 
+Why is the RFV prediction so high for alfalfa? Did the hail storm in May2022 impact forage quality? Perhaps people put more leaves in the forage quality subsample then stems, causing much higher RFV. 
 
+Why is neutral detergent digestibility so low? We need to be skeptical of RFQ so long as we are skeptical of NDFD, even though RFQ is correctly correlated with RFV. 
+
+Why is variance so low in the NIRS prediction? Is there an issue with how data is being read in or processed causing pseudoreplication?
 
 ### Data availability
 
@@ -912,12 +920,4 @@ dat5$rfq.legume %>%
 
 In a similar way you want to know how much N is in a fertilizer, you want to know how much digestible food is in a forage. The old school way was relative feed value (RFV), which is simply a measure of fiber content. The higher the fiber (ADF and NDf), the lower the RFV, meaning there isn't as much digestible food in the forage. Among alfalfa cuttings that are both 1 ton of dry matter, buy the one with the higher RFv because it's more dense in digestible energy. The forage with a lower RFv has more undigestible lignin that's basically trash that you have to transport, feed, takes up space in the cows stomach during digestion and then becomes waste. So RFV is just a function of ADF and NDF and it works great at making comparisons between multiple cuttings of the same hay field. The problem with RFV is when you try to make a comparison between an alfalfa hay and an alfalfa-grass mixture. The problem is that grasses have more fiber (ADF and NDF), but their fiber is more digestible. So grasses get lower RFV values than they deserve.  but it's not good at comparing different hay mixtures because grasses have more ADF and NDF, but comparing a single species hay alfalfa hays, but it struggles comparing but one problem is that  
 
-
-
-One 
-
-how much digestible food there is (subtract out the Ash and fiber that )
-
-Relative feed value and relative forage quality condense the quality of a hay down to a single number. 
-Relative feed value and relative forage quality are single numbers meant to differentiate the quality forages 
 
