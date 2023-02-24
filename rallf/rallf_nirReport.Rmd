@@ -716,12 +716,12 @@ Let's see how RFQ values would be if NDFD was near 60 instead of 6.
 If they are closer to 200, then this would mean we likely need to bias the NDF and ADF (they are too low) and bias the NDFD (too low as well). When we increase these values, the RFV and RFQ will go down to more normal levels
 
 
-```{r}
+```{r, include=F}
 print(calc.rfq.rfv.legume)
 
 ```
 
-```{r}
+```{r, include=F}
 # rfq.legume=DMI.legume*TDN.legume/1.23,
 # DMI.legume=(120/NDF) + (NDFD - 45) * .374/1350*100,
 # TDN.legume=(NFC*.98)+(CP*.93)+(FA*.97*2.25)+(NDFn*NDFD/100)-7,
