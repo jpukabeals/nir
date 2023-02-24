@@ -5,6 +5,7 @@ date: "2023 February"
 author: "Jesse Puka-Beals"
 output:
   pdf_document
+  # word_document
 editor_options: 
   chunk_output_type: console
 
@@ -21,6 +22,8 @@ format:
 Update this report after we finish scanning 2022 data
 
 Pull in lignin data from NIRS scanning?
+
+It's weird the RFQ and RFV do not correlate. Is this because of the weird NDFD values?
 
 ### Discussion topics
 
@@ -125,7 +128,7 @@ dat2 %>%
 
 ```
 
-As seen in tables, we have missing 24+24+1+14+22 data points. The two sets of 24 data points are for the first cut at rosemount in 2022, which have not been scanned as of 15Feb2023. The remaining missing data may have been tossed due to mold.
+As seen in tables, we have missing $24+24+1+14+22 = 85$ data points. The two sets of 24 data points are for the first cut at rosemount in 2022, which have not been scanned as of 15Feb2023. The remaining missing data may have been tossed due to mold.
 
 \newpage
 
@@ -684,6 +687,20 @@ dat1 %>%
   knitr::kable(
     caption = "Neutral detergent digestibility ranged from 4 to 31%. This is very low and should be validated with wet chemistry"
   )
+```
+
+Does the low NDFD values make the RFQ values lower, causing the RFQ and RFV to not be well correlated?
+
+```{r}
+# library(corrplot)
+
+dat1 %>% 
+  dplyr::select(rfv,rfq.legume) %>% 
+  cor() %>% 
+  corrplot()
+
+d
+  
 ```
 
 
