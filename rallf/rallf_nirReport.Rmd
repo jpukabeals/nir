@@ -493,6 +493,16 @@ We expect an RFV of around 150, we observed an RFV of `r round(mean(dat1$rfv),0)
 
 ```{r}
 dat1 %>% 
+  # colnames()
+  ggplot(aes(rfv)) +
+  stat_bin() +
+  labs(
+    x="RFV"
+  )
+```
+
+```{r}
+dat1 %>% 
   ggplot(aes(CP)) +
   stat_bin() 
 ```
@@ -533,6 +543,8 @@ For neutral detergent digestibility over 48 hours, we expect values near 50%, we
 
 ## Relative forage quality
 
+Since relative feed value and relative forage quality are strongly correlated, the results of the anlaysis are the same. 
+
 ```{r echo=T}
 
 dat1 %>% 
@@ -564,7 +576,9 @@ Similar pattern across years and sites; RFQ is similar for the first cut and the
 
 Why is variance so low? I can barely see error bars
 
+
 \newpage
+
 ## Crude protein
 
 ```{r echo=T}
