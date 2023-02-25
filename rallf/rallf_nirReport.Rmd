@@ -27,7 +27,7 @@ Validate the predicted forage quality parameters with wet chemsity. If machine i
 
 Look at predicted lignin from NIRS?
 
-
+\newpage
 ### Expected results
 
 Alfalfa varieties (HarvXtra) will have lower lignin content and higher NDFD than conventional varieties. The RFV should be higher for HarvXtra varieties. 
@@ -490,7 +490,7 @@ dat1 %>%
   )
 ```
 
-We expect an RFV of around 150, we observed an RFV of `r round(mean(dat1$rfv),0)`
+We expect an RFV of around 150, we observed an RFV of `r round(mean(dat1$rfv),0)`. Some samples were predicted to have an RFV greater than 300!
 
 ```{r}
 dat1 %>% 
@@ -885,6 +885,8 @@ dat1 %>%
 # As NDF and ADF increase, so does NDFD, and RFV and RFQ goes down. 
   
 ```
+
+Yes, RFV and RFQ are strongly positively correlated as they should be. 
 
 \newpage
 ### RFQ
