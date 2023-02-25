@@ -4,8 +4,9 @@ subtitle: "preliminary report"
 date: "2023 February"
 author: "Jesse Puka-Beals"
 output:
-  pdf_document
+  pdf_document:
   # word_document
+    toc: true
 editor_options: 
   chunk_output_type: console
 format: 
@@ -24,7 +25,7 @@ Update this report after we finish scanning 2022 data
 
 Validate the predicted forage quality parameters with wet chemsity. If machine is underestimating ADF and NDF, this will explain the high RFV values. The NDFD values need to also be validated. We need to consult with a lab familiar with NIRS for both conventional and reduced lignin alfalfa. 
 
-Pull in lignin data from NIRS scanning?
+Look at predicted lignin from NIRS?
 
 
 ### Expected results
@@ -618,6 +619,8 @@ Why is variance so low? I can barely see error bars
 
 
 \newpage
+# Diving deeper
+
 ## Relative feed value and ADF
 
 RFV is the only parameter where we are outside of our expected range. We expect around 150 and we are averaging 200. We have some RFV values over 300. 
