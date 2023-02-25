@@ -494,12 +494,17 @@ We expect an RFV of around 150, we observed an RFV of `r round(mean(dat1$rfv),0)
 ```{r}
 dat1 %>% 
   # colnames()
-  ggplot(aes(rfv)) +
+  ggplot(aes(rfv,
+             fill = factor(cut))) +
   stat_bin() +
   labs(
     x="RFV"
-  )
+  ) +
+  geom_vline(xintercept = 200) +
+  facet_wrap(~site*year)
 ```
+
+With the exception of Rosemount in 2022, all site-years had multiple cuts with predicted RFV over 200. First cuts tended to have the highest quality, which is expected.
 
 ```{r}
 dat1 %>% 
