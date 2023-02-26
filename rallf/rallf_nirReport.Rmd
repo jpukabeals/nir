@@ -165,7 +165,7 @@ dat5 %>%
 
 ```
 
-# Predicting forage quality parameters by NIRS
+# Predicting forage quality parameters with NIRS
 
 We are predicting alfalfa forage quality parameters using near infrared scanning with a generalist equation designed for all hay. Some labs use an alfalfa equation and some labs have different alfalfa equations for conventional vs. reduced lignin alfalfa. All predictions should be validated with wet chemistry, though NIRS predictions without recent validation can still be useful in estimating relative differences between treatments.
 
@@ -942,6 +942,5 @@ dat5$rfq.legume %>%
 \newpage
 # A review of RFV and RFQ
 
-In a similar way you want to know how much N is in a fertilizer, you want to know how much digestible food is in a forage. The old school way was relative feed value (RFV), which is simply a measure of fiber content. The higher the fiber (ADF and NDf), the lower the RFV, meaning there isn't as much digestible food in the forage. Among alfalfa cuttings that are both 1 ton of dry matter, buy the one with the higher RFv because it's more dense in digestible energy. The forage with a lower RFv has more undigestible lignin that's basically trash that you have to transport, feed, takes up space in the cows stomach during digestion and then becomes waste. So RFV is just a function of ADF and NDF and it works great at making comparisons between multiple cuttings of the same hay field. The problem with RFV is when you try to make a comparison between an alfalfa hay and an alfalfa-grass mixture. The problem is that grasses have more fiber (ADF and NDF), but their fiber is more digestible. So grasses get lower RFV values than they deserve.  but it's not good at comparing different hay mixtures because grasses have more ADF and NDF, but comparing a single species hay alfalfa hays, but it struggles comparing but one problem is that  
-
+In a similar way you want to know how much N is in a fertilizer, you want to know how much digestible food is in a forage. The old school way was relative feed value (RFV), which is simply a measure of fiber content. The higher the fiber (ADF and NDf), the lower the RFV, meaning there isn't as much digestible food in the forage. Among alfalfa cuttings that are both 1 ton of dry matter, buy the one with the higher RFv because it's more dense in digestible energy. The forage with a lower RFv has more undigestible lignin that's basically trash that you have to transport, feed, takes up space in the cows stomach during digestion and then becomes waste. So RFV is just a function of ADF and NDF and it works great at making comparisons between multiple cuttings of the same hay field. The problem with RFV is when you try to make a comparison between an alfalfa hay and an alfalfa-grass mixture. The problem is that grasses have more fiber (ADF and NDF), but their fiber is more digestible. So grasses get lower RFV values than they deserve.  
 
