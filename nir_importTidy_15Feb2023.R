@@ -53,8 +53,8 @@ treatmentKey %>%
 
 treatmentKey2 %>% 
   filter(id<220787) %>%
-  filter(id>220000 | id<210975) %>% 
-  filter(id<20389 | id>210000) -> treatmentKey3
+  filter(id>=220000 | id<210975) %>% 
+  filter(id<20389 | id>=210000) -> treatmentKey3
 
 # we have 2148 bottle codes between 2020:2022
 
