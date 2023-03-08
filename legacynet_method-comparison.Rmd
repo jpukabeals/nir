@@ -1,0 +1,119 @@
+---
+title: NIRS prediction comparison between UMN and Europe
+output:
+  pdf_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r include=F}
+knitr::opts_chunk$set(
+  echo = F,
+  warning = F, 
+  message = F,
+  comment = NA
+)
+
+library(tidyverse)
+
+rm(list = ls())
+
+theme_set(theme_bw())
+```
+
+```{r}
+source("legacynet_method-comparison.R")
+```
+
+
+# Conclusion
+
+The common predicted values between UMN and Europe were crude protein (CP), acid detergent fiber (ADF) and neutral detergent fiber (NDF). 
+
+These forage quality parameters were adjusted to a percent of dry matter basis
+
+We only have a comparison of one cutting, which was taken on 14Sep2022 of sorghum sudangrass. 
+
+At this stage, the sorghum sudangrass was near heading. Some seedheads were fully emerged. 
+
+At this stage, we predict CP~9, ADF~40, NDF~65. 
+
+UMN underestimated CP, ADF and NDF relative to Europe and what we expected to observe. 
+
+![https://www.extension.iastate.edu/sites/www.extension.iastate.edu/files/iowa/SudanFS50.pdf](SS_values2.png)
+
+
+
+
+```{r}
+dat9 %>% 
+  group_by(method) %>% 
+  summarise(CP = mean(CP),
+            ADF = mean(ADF),
+            NDF = mean(NDF)) %>% 
+  mutate(
+    across(2:4,
+           .fns=~round(.x,0))
+  ) %>% 
+  knitr::kable(
+    caption = "Predicted forage quality with NIRS of sorghum sudangrass when cut at heading stage"
+  )
+```
+
+
+\newpage
+# Histograms
+
+```{r, fig.cap="Crude Protein"}
+dat9 %>% 
+  ggplot(aes(CP,
+             fill = method
+             )) +
+  geom_density(alpha=.5) +
+  labs(
+    caption = "
+    Sorghum Sudangrass second cut was 14Sep as seedhead emerged (Zadocks 50-60)
+    Expected CP is 9%
+    "
+  )
+```
+
+
+
+
+```{r, fig.cap="ADF"}
+
+dat9 %>% 
+  ggplot(aes(ADF,
+             fill = method
+  )) +
+  geom_density(alpha=.5) +
+  labs(
+    caption = "
+    Sorghum Sudangrass second cut was 14Sep as seedhead emerged (Zadocks 50-60)
+    Expected ADF is ~40%
+    "
+  )
+```
+
+
+```{r, fig.cap="NDF"}
+dat9 %>% 
+  ggplot(aes(NDF,
+             fill = method
+  )) +
+  geom_density(alpha=.5) +
+  labs(
+    caption = "
+    Sorghum Sudangrass second cut was 14Sep as seedhead emerged (Zadocks 50-60)
+    Expected NDF is ~65%,
+    UMN appears to be underestiming NDF
+    "
+  )
+```
+
+
+\newpage
+
+![Sorghum Sudangrass at cutting. Zadocks between 50 and 60](IMG_9096.JPG)
+
