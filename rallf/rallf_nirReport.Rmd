@@ -19,11 +19,13 @@ format:
 
 ### To do
 
+Put in dates of harvests. 
+
 Recreate the RFQ equation to understand what will happen to RFQ prediction as NDFD is adjusted
 
-Update this report after we finish scanning 2022 data
+Update this report after we finish scanning 2022 data. We found more data on 7March for 2022-3rd cut. 
 
-Validate the predicted forage quality parameters with wet chemsity. If machine is underestimating ADF and NDF, this will explain the high RFV values. The NDFD values need to also be validated. We need to consult with a lab familiar with NIRS for both conventional and reduced lignin alfalfa. 
+Validate the predicted forage quality parameters with wet chemsity. If machine is underestimating ADF and NDF, this will explain the high RFV values. The NDFD values need to also be validated. When we predicted NDFD for IWG in FIG the values were reasonable (50%), but for alfalfa they are unreasonable (16%). We need to consult with a lab familiar with NIRS for both conventional and reduced lignin alfalfa. 
 
 Look at predicted lignin from NIRS?
 
@@ -149,6 +151,8 @@ dat2 %>%
 ```
 
 As seen in tables, we have missing $24+24+1+14+22 = 85$ data points. The two sets of 24 data points are for the first cut at rosemount in 2022, which have not been scanned as of 15Feb2023. The remaining missing data may have been tossed due to mold.
+
+^^ we found the 3rd cut data 
 
 \newpage
 
@@ -573,7 +577,7 @@ dat1 %>%
 dat1 %>% 
   ggplot(aes(cut,rfq.legume,
              col=intensity)) +
-  stat_summary() +
+  stat_summary(  ) +
   facet_wrap(~site*year) +
   labs(y="RFQ")
 ```
@@ -582,6 +586,37 @@ Similar pattern across years and sites; RFQ is similar for the first cut and the
 
 Why is variance so low? I can barely see error bars
 
+
+```{r checking variance, echo=T}
+# is their psuedoreplication/duplication happening causing variance to be low?
+# this could be a mistake I made during a left_join()
+dat1 %>% 
+  filter(
+    site=="rosemount" &
+      year == "2021" &
+      intensity == "45-day" &
+      cut=="2"
+  ) %>% 
+  distinct(rfq.legume) %>% 
+  .$rfq.legume 
+# note that there are no duplicated values of RFQ
+
+```
+
+Let's look at standard deviation instead of standard error
+
+```{r}
+dat1 %>% 
+  ggplot(aes(cut,rfq.legume,
+             col=intensity)) +
+  stat_summary(
+    fun.data = mean_sdl
+  ) +
+  facet_wrap(~site*year) +
+  labs(y="RFQ + Standard deviation")
+```
+
+There is simply a large difference between standard error and standard deviation, likely because n() is larger than usual (n=24) so standard error really reduces the visual representation of variance. 
 
 \newpage
 
@@ -615,8 +650,7 @@ dat1 %>%
 
 Similar pattern across years and sites, same as RFQ; CP is similar for the first cut and then the second cut the CP is lower for the 45-day cuts than the 35-day cuts. 
 
-Why is variance so low? I can barely see error bars
-
+Same as with RFQ, summarizing with standard error shows much less variation around means than standard deviation. 
 
 \newpage
 # Diving deeper
@@ -888,6 +922,10 @@ dat1 %>%
 
 Yes, RFV and RFQ are strongly positively correlated as they should be. 
 
+Other forage quality parameters are correlated as expected with the exception of NDFD. 
+
+As forages mature, CP should decrease and NDFD should decrease, therefore they should be positively correlated, but instead they are negatively correlated. Furthermore, as NDFD increases RFQ should increase, but they are also negatively correlated. 
+
 \newpage
 ### RFQ
 
@@ -925,17 +963,54 @@ NDFD <- 7
 
 # this equation seems to be wrong, because it predicts RFQ of 324, but it should be near 130. Not sure what is problem, but RFQ has a problem!
 
-
 (120/NDF) + (NDFD - 45) * .374/1350*100*(100-((0.93*NDF)+CP+EE+Ash)*.98)+(CP*.93)+(FA*.97*2.25)+(NDF*0.93*NDFD/100)-7/1.23
 
+```
+
+
+```{r}
+
+# dat5 %>% 
+#   slice(1) %>% 
+#   View()
+
+CP=18
+ADF = 20
+NDF =30
+NDFD =10
+NDFD = 60
+DM = 90
+EE = 2
+FA = 1
+Ash = 10
+
+100-((0.93*NDF)+CP+EE+Ash) -> NFC
+
+NDF*.93 -> NDFn
+
+# NDFDp
+22.7+0.664*NDFD -> NDFDp
+
+# TDN.legume
+(NFC*.98) + (CP*.93) + (FA*.97*2.25) + (NDFn*NDFD/100) - 7 -> TDN.legume
+
+# DMI.legume
+(120/NDF) + (NDFD-45) * 0.374/1350*100 -> DMI.legume
+
+# rfq.legume
+DMI.legume * TDN.legume/1.23
+
+# 
 
 ```
+
 
 let's see what we are shooting for
 ```{r}
 
 dat5$rfq.legume %>% 
-  range()
+  range() %>% 
+  round(0)
 
 ```
 
