@@ -1,5 +1,7 @@
 ---
 title: NIRS prediction comparison between UMN and Europe
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+author: Jesse Puka-Beals
 output:
   pdf_document
 editor_options: 
@@ -25,27 +27,23 @@ theme_set(theme_bw())
 source("legacynet_method-comparison.R")
 ```
 
-
-# Conclusion
+On 14Sep2022, we collected forage quality samples from a sorghum sudangrass stand as part of the LegacyNet experiment. We processed and then predicted forage quality using the Hay equation with our Perten NIRS at UMN. Then we shipped the samples to Europe where they predicted forage quality using their Foss NIRS. Here we compare the predictions. 
 
 The common predicted values between UMN and Europe were crude protein (CP), acid detergent fiber (ADF) and neutral detergent fiber (NDF). 
 
-These forage quality parameters were adjusted to a percent of dry matter basis
+These forage quality parameters were adjusted to a percent of dry matter basis.
 
-We only have a comparison of one cutting, which was taken on 14Sep2022 of sorghum sudangrass. 
+Based on the maturity of the Sorghum Sudangrass at the time of cutting, we predict CP~9, ADF~40, NDF~65 for the plants with emerged seed heads and CP~11, ADF~35 NDF~60 for the less mature plants. 
 
-At this stage, the sorghum sudangrass was near heading. Some seedheads were fully emerged. 
-
-At this stage, we predict CP~9, ADF~40, NDF~65. 
-
-UMN underestimated CP, ADF and NDF relative to Europe and what we expected to observe. 
+We conclude that UMN underestimates CP, ADF and NDF relative to Europe and relative to what we expected to observe. 
 
 ![https://www.extension.iastate.edu/sites/www.extension.iastate.edu/files/iowa/SudanFS50.pdf](SS_values2.png)
 
 
+![Sorghum Sudangrass at time of cutting. Zadocks between 4 and 6. Some plants had full seedhead emergence some plants did not have a seedhead. Note this was the second cutting of this sorghum sudangrass stand, which may explain the wide range of maturity stage.](IMG_9096.JPG)
 
 
-```{r}
+```{r summary table of forage quality}
 dat9 %>% 
   group_by(method) %>% 
   summarise(CP = mean(CP),
@@ -61,25 +59,20 @@ dat9 %>%
 ```
 
 
-\newpage
-# Histograms
 
 ```{r, fig.cap="Crude Protein"}
 dat9 %>% 
   ggplot(aes(CP,
              fill = method
              )) +
-  geom_density(alpha=.5) +
-  labs(
-    caption = "
-    Sorghum Sudangrass second cut was 14Sep as seedhead emerged (Zadocks 50-60)
-    Expected CP is 9%
-    "
-  )
+  geom_density(alpha=.5) 
+  # labs(
+  #   caption = "
+  #   Sorghum Sudangrass second cut was 14Sep as seedhead emerged (Zadocks 50-60)
+  #   Expected CP is 9%
+  #   "
+  # )
 ```
-
-
-
 
 ```{r, fig.cap="ADF"}
 
@@ -87,33 +80,30 @@ dat9 %>%
   ggplot(aes(ADF,
              fill = method
   )) +
-  geom_density(alpha=.5) +
-  labs(
-    caption = "
-    Sorghum Sudangrass second cut was 14Sep as seedhead emerged (Zadocks 50-60)
-    Expected ADF is ~40%
-    "
-  )
+  geom_density(alpha=.5) 
+  # labs(
+  #   caption = "
+  #   Sorghum Sudangrass second cut was 14Sep as seedhead emerged (Zadocks 50-60)
+  #   Expected ADF is ~40%
+  #   "
+  # )
 ```
-
 
 ```{r, fig.cap="NDF"}
 dat9 %>% 
   ggplot(aes(NDF,
              fill = method
   )) +
-  geom_density(alpha=.5) +
-  labs(
-    caption = "
-    Sorghum Sudangrass second cut was 14Sep as seedhead emerged (Zadocks 50-60)
-    Expected NDF is ~65%,
-    UMN appears to be underestiming NDF
-    "
-  )
+  geom_density(alpha=.5)
+  # labs(
+  #   caption = "
+  #   Sorghum Sudangrass second cut was 14Sep as seedhead emerged (Zadocks 40-60)
+  #   Expected NDF is ~65%,
+  #   UMN appears to be underestiming NDF
+  #   "
+  # )
 ```
 
 
-\newpage
 
-![Sorghum Sudangrass at cutting. Zadocks between 50 and 60](IMG_9096.JPG)
 
