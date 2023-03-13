@@ -8,6 +8,7 @@ library(googlesheets4)
 url_compiledReports <- "https://docs.google.com/spreadsheets/d/1iCLw7HYw6CFCf7cdhy0fIYO3cu63O_wtKMC4FDtolII/edit#gid=0"
 read_sheet(
   url_compiledReports,
+  gs4_deauth(),
   sheet = 1
 ) -> compiledReports
 
@@ -102,23 +103,32 @@ bind_rows(treatmentKey2,
           treatmentKey4,
           treatmentKey6) -> treatmentKeyMaster 
 
+rm(treatmentKey,treatmentKey2,treatmentKey3,treatmentKey4,treatmentKey5,treatmentKey6)
+
 treatmentKeyMaster %>% 
   write.csv("bottleCodes_compiled_2020to2023.csv")
   
 # full join raw reports with treatment key by bottle code just 2022 bottle codes
-treatmentKey2 %>% 
+treatmentKeyMaster %>% 
   full_join(compiledReports) %>%
   # View()
+  # dim()
   write.csv("nir_raw-report-with-treatments_full-join.csv")
 
 # right join for 2020-2022 bottle code key
 treatmentKeyMaster %>% 
   right_join(compiledReports) %>% 
+  # dim()
   # View()
   write.csv("nir_raw-report-with-treatments_right-join.csv")
 
 # It's ugly and bulky, but someone can filter through this csv file to find
 # enough ID characteristics associated with a scan to get what they need
+
+# Note that we have ~650 RALLF in full join and ~250 RALLF in right join
+
+
+
 
 
 # Calculating RFQ-RFQ -----------------------------------------------------
@@ -132,12 +142,13 @@ treatmentKeyMaster %>%
 
 colnames(treatmentKeyMaster) <- c("Sample ID", paste0(rep("ID",25),1:25))
 
+
 # Output
 tidy.nir.report.with.spaces.predicted.first(compiledReports) %>% 
   mutate(`Sample ID` = code) %>% 
   calc.rfq.rfv() %>%
   # colnames()
-  dplyr::select(`Sample ID`,CP,NDF,ADF,rfv,rfq.grass,rfq.legume) %>% 
+  dplyr::select(`Sample ID`,CP,ADF,NDF,NDFD,rfv,rfq.grass,rfq.legume) %>% 
   left_join(treatmentKeyMaster) %>% 
   # colnames()
   mutate(
@@ -159,7 +170,7 @@ tidy.nir.report.with.spaces.predicted.first(compiledReports) %>%
   mutate(`Sample ID` = code) %>% 
   calc.rfq.rfv() %>%
   # colnames()
-  dplyr::select(`Sample ID`,CP,NDF,ADF,rfv,rfq.grass,rfq.legume) %>% 
+  dplyr::select(`Sample ID`,CP,ADF,NDF,NDFD,rfv,rfq.grass,rfq.legume) %>% 
   left_join(treatmentKeyMaster) %>% 
   # colnames()
   mutate(
@@ -173,7 +184,8 @@ tidy.nir.report.with.spaces.predicted.first(compiledReports) %>%
 
 dat %>% 
   # colnames()
-  filter(ID2 == "RALLF") -> dat2
+  filter(ID2 == "RALLF" |
+           ID13 == "RALLF") -> dat2
 
 dat2 %>% 
   colnames()
