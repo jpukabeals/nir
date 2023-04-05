@@ -19,7 +19,16 @@ read.csv("nir_allHay_15Feb2023.csv") -> dat
 read.csv(
   "nir_15Feb2023_To_15Mar2023.csv"
 ) %>% 
-  filter(Analysis.Profile == "Hay") %>% 
+  filter(Product.Name == "Hay") %>% 
+  bind_rows(dat) -> dat
+
+# Adding in mor eNIRS data that was collected between 15Mar and 5Apr
+
+read.csv(
+  "nir_15Mar2023_To_5Apr2023.csv"
+) %>% 
+  filter(Product.Name == "Hay") %>% 
+  mutate(Sample.ID = as.character(Sample.ID)) %>% 
   bind_rows(dat) -> dat
 
 # dat dataset contains columns for the predicted values of all products (IWG,
@@ -79,7 +88,6 @@ treatmentKey2 %>%
 treatmentKey3 %>% 
   inner_join(dat3) -> dat4
 
-# We have 1776 observations
 
 # RALLF -------------------------------------------------------------------
 
@@ -106,7 +114,7 @@ dat4 %>%
     code = Sample.ID
   ) %>% 
   write.csv(
-    "rallf_nirData_15Mar2023.csv",
+    "rallf_nirData_5Apr2023.csv",
     row.names = F
   )
 
