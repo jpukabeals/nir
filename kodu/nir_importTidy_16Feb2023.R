@@ -7,16 +7,28 @@ library(googlesheets4)
 
 
 # we are going to read in data
-url <- "https://docs.google.com/spreadsheets/d/1h_qAGjXJ6xGUbuScg_jzztqhuiOTQbL6AlZx9VFHuKA/edit#gid=2068542615"
-read_sheet(
-  url,
-  sheet=3
+# url <- "https://docs.google.com/spreadsheets/d/1h_qAGjXJ6xGUbuScg_jzztqhuiOTQbL6AlZx9VFHuKA/edit#gid=2068542615"
+# read_sheet(
+#   url,
+#   sheet=3
+# ) -> dat
+# 
+# dat %>% 
+#   write.csv("kodu_googlesheet_combiningData.csv")
+
+setwd(
+  "C:/Users/pukab001/Documents/R projects/nir/kodu"
+)
+getwd()
+read.csv(
+  "kodu_googlesheet_combiningData.csv"
 ) -> dat
 
-dat %>% 
-  write.csv("kodu_googlesheet_combiningData.csv")
 
 dat %>% 
+  rename(
+    `sample biomass type` = sample.biomass.type
+  ) %>% 
   mutate(`sample biomass type` = factor(`sample biomass type`,
                                         levels=c("spring cut", "summer straw", "fall cut"))) %>% 
   mutate(Year = as.factor(Year)) %>% 
@@ -48,3 +60,8 @@ dat2 %>%
                # aes(shape = determinationMethod),
                # position = position_dodge(.7),
                # size=4) 
+
+
+setwd(
+  "C:/Users/pukab001/Documents/R projects/nir"
+)
