@@ -1,6 +1,7 @@
 
-# This is a rough script done on a day
-# I am coming back on 15March to update the data from recent scans that happened after 15March
+# Imports the raw extensive reports and outputs processed data with necessary ID
+# info and calculated forage quality parameters
+
 
 # Useful functions and packages
 source("functions_nir.R")
@@ -8,18 +9,23 @@ library(tidyverse)
 library(googlesheets4)
 
 
-# All Hay data from up until 15Feb
+# Data import -------------------------------------------------------------
+
+# All Hay data from up until 15Feb. This data was already filtered to only
+# contain rows where the Hay equation was used.
 read.csv("nir_allHay_15Feb2023.csv") -> dat
 
-# Updating this data with scans that happened between 15Feb and 15Mar
+# Adding in more NIRS data that was collected between 15Feb and 15Mar
 read.csv(
   "nir_15Feb2023_To_15Mar2023.csv"
 ) %>% 
   filter(Analysis.Profile == "Hay") %>% 
   bind_rows(dat) -> dat
 
-# dat dataset contains columns for all products (IWG, Pennycress etc.), not just
-# hay many of these columns are lists that we want to remove
+# dat dataset contains columns for the predicted values of all products (IWG,
+# Pennycress etc.). This means there is a column for Eicosenoic Acid because
+# this is predicted by pennycress equation. This is junk that we now will
+# remove. 
 
 # interestingly, if the column is read as a list, it seems it is a column that
 # was for an equation that wasn't Hay, so we just filter out columns that are
@@ -39,7 +45,8 @@ tidy.nir.report.with.periods2(dat2) %>%
   calc.rfq.rfv() -> dat3
 
 # Now I'm pulling in treatment key that was generated in
-# "nir_import-tidy_7Feb2023.R" 
+# "nir_import-tidy_7Feb2023.R" - see 7Feb EDA in RALLf repository for how I
+# generated it. It may not be exhaustive. 
 read.csv("bottleCodes_compiled_2020to2023.csv") -> treatmentKey
 
 treatmentKey %>% 
@@ -58,7 +65,7 @@ treatmentKey %>%
 # n=~80, that's it. Will need to come back to dig up that data if needed. 
 
 # filtering out bottle codes that were read in but don't have have any ID info,
-# at least as of 15Feb2023, this may need to be updated if more bottle codes are
+# at least as of 15Mar2023, this may need to be updated if more bottle codes are
 # added to compiled treatment codes
 
 treatmentKey2 %>% 
@@ -72,10 +79,13 @@ treatmentKey2 %>%
 treatmentKey3 %>% 
   inner_join(dat3) -> dat4
 
+# We have 1776 observations
 
 # RALLF -------------------------------------------------------------------
 
 # Lets get that RALLF data
+
+# all we need is code,plot and year, the rest will be filled in with keys
 
 dat4 %>% 
   mutate_all(tolower) %>% 
@@ -84,19 +94,28 @@ dat4 %>%
     .vars_predicate = any_vars(
       str_detect(.,"rallf") #|
     )) %>% 
-  write.csv("dummy.csv")
+  dplyr::select(
+    Sample.ID,
+    ID4,
+    ID1,
+    36:55
+  ) %>% 
+  rename(
+    plot = ID4,
+    year = ID1,
+    code = Sample.ID
+  ) %>% 
+  write.csv(
+    "rallf_nirData_15Mar2023.csv",
+    row.names = F
+  )
 
-# the output of this sheet was cleaned in excel, then saved
-
-# read.csv("dummy.csv") %>% 
-#   write.csv("RALLF_nirData_20Feb2023.csv")
-
-read.csv("RALLF_nirData_20Feb2023.csv") -> dat5
+# read.csv("RALLF_nirData_20Feb2023.csv") -> dat5
 
 # fixing st. paul naming issue
-dat5 %>% 
-  mutate(site = fct_recode(site,
-                           "st paul" = "st. paul")) -> dat5
+# dat5 %>% 
+  # mutate(site = fct_recode(site,
+                           # "st paul" = "st. paul")) -> dat5
 
 
 # KODU --------------------------------------------------------------------
