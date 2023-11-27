@@ -1,0 +1,82 @@
+---
+title: "whitebarn fall baseline samples 2023"
+format: pdf
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r echo=FALSE,include=FALSE}
+source("whitebarn_nir_summary.R")
+
+```
+
+# NIRS
+
+forage quality estimated using near infrared spectroscopy (NIRS) Perten DA7250 with 'hay' equation in small white static plastic cup.
+
+machine struggled to confidently predict neutral detergent fiber digestibility so I am not reporting those values nor relative forage quality.
+
+protein, adf (acid detergent fiber) and ndf (neutral detergent fiber) expressed as percent of dry matter.
+
+rfv.sdsu is relative feed value (RFV) and has no units.
+
+# Straw bale
+
+Over a dozen cores of straw bales were sampled at white barn during fall sampling. We scanned 8 sub-samples to predict forage quality.
+
+Protein averaged 5.9 %, RFV averaged 63.
+
+```{r echo=F}
+# just data from straw bale sample
+dat8 %>% 
+  select(protein,adf,ndf,rfv.sdsu) %>% 
+  summary()
+
+```
+
+# Plot data
+
+We collected fall baseline samples from 3 locations in the field. From each location, 3 samples within the exclosure and 3 samples outside. Therefore we had 3\*(3+3) total samples from the field, each sample was scanned 3 times after grinding, resulting in 54 total data points for forage quality.
+
+```{r echo=FALSE}
+dat9 %>% 
+  select(-c(sample_type,sample_location,plot,Experiment,exclosure)) %>% 
+  summary()
+```
+
+```{r echo=F, message=FALSE}
+# data without straw bale
+dat9 %>% 
+  ggplot(aes(protein)) +
+  stat_bin()
+
+dat9 %>% 
+  ggplot(aes(rfv.sdsu)) +
+  stat_bin()
+```
+
+# Comparisons
+
+```{r echo=FALSE}
+dat9 %>% 
+  # glimpse()
+  ggplot(aes(sample_location,protein,
+             fill=exclosure)) +
+  geom_boxplot()
+
+dat9 %>% 
+  # glimpse()
+  ggplot(aes(sample_location,rfv.sdsu,
+             fill=exclosure)) +
+  geom_boxplot()
+```
+
+
+
+# Conclusions
+
+These are fall baseline samples of intermediate wheatgrass. 
+We expect good quality forage. This would be protein around 15% and relative feed value of 150.
+We expect normally distributed data
+We do not expect any differences by exclosure (inside vs outside). 
