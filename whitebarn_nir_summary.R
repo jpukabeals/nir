@@ -61,7 +61,7 @@ bottleCodes %>%
   rename(code = Bottle.Code) %>% 
   right_join(dat4) -> dat5
 
-# the id information is messed up, not going to mess with it
+# the id information is messed up
 
 dat5 %>% 
   mutate(sample_type = Location,
@@ -93,6 +93,8 @@ dat7 %>%
 dat7 %>% 
   filter(sample_type=="straw bale") -> dat8
 
+write.csv(dat8, "whitebarn_strawbale.csv",
+          row.names = F)
   
 # protein
 dat7 %>% 

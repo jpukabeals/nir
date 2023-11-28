@@ -14,7 +14,6 @@ editor_options:
   chunk_output_type: console
 bibliography:
   - Hunter2.bib
-
 ---
 
 ```{r echo=FALSE,include=FALSE}
@@ -133,13 +132,12 @@ These are fall baseline samples of intermediate wheatgrass.
 
 We do not expect to see any treatment differences, but this provides valuable insight into the variability among samples and the amount of samples needed to detect differences if present (power analysis).
 
-We expect normally distributed data for quality and yield, and we observe this. No obvious outliers. 
+We expect normally distributed data for quality and yield, and we observe this. No obvious outliers.
 
-We expect good quality forage from the fall biomass and poor quality from the summer straw. *Fall* We observe about 10% protein and an RFV of 85. This is much lower than expected, but can be fed to dry cows as maintenance feed. It's possible our predictions are incorrect, potentially overestimating the amount of non-digestible fiber in the sample. We expect the forage to be more digestible when harvested in fall (RFV ~125-150). *Summer straw* With protein at 6% and RFV at 62, this is poor quality feed as expected.
+We expect good quality forage from the fall biomass and poor quality from the summer straw. *Fall* We observe about 10% protein and an RFV of 85. This is much lower than expected, but can be fed to dry cows as maintenance feed. It's possible our predictions are incorrect, potentially overestimating the amount of non-digestible fiber in the sample. We expect the forage to be more digestible when harvested in fall (RFV \~125-150). *Summer straw* With protein at 6% and RFV at 62, this is poor quality feed as expected.
 
-We expect a large fall forage harvest approaching 5 Mg ha as reported in @Hunter2020, but we observed about 2.3 Mg ha which is suprising since forage yield seemed very high compared to other fields. 
+We expect a large fall forage harvest approaching 5 Mg ha as reported in @Hunter2020, but we observed about 2.3 Mg ha which is suprising since forage yield seemed very high compared to other fields.
 
 We do not expect any differences by exclosure (inside vs outside). For the most part, this held true. The middle exclosure samples were relatively higher in protein and water content than the other samples. The differences in the middle exclosure between inside and outside are interesting in figure 1 and 2, underscoring random variability in sampling.
 
 # References
-
