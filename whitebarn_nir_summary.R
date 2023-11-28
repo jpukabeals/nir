@@ -75,7 +75,16 @@ dat5 %>%
 calc.rfq.rfv.grass(dat6) -> dat7
   
 dat7 %>% 
-  write.csv("whitebarn_nir_masteroutput",
+  # glimpse()
+  group_by(sample_location,plot,exclosure) %>% 
+  summarise(
+    across(
+      9:27,
+      mean
+    )
+  ) %>% 
+  arrange(desc(sample_location)) %>% 
+  write.csv("whitebarn_nir_masteroutput.csv",
             row.names = F)
 
 # report
@@ -92,5 +101,47 @@ dat7 %>%
          protein, adf, ndf, rfv.sdsu) -> dat9
 
 
-# relative feed value
+# moisture content
 
+# https://docs.google.com/spreadsheets/d/1CtGkiFazbxG_Xeg4kQVQFkLK9TAsaLhy8RNksqq9BNo/edit#gid=126232655
+read.csv("White Barn Master - forage.csv") -> dat10
+
+# putting it into naming convention of this file
+dat10 %>% 
+  rename(exclosure = Trt,
+         plot = Point,
+         sample_location = Field,
+         sample_type = Sample.timing,
+         experiment = Location) %>% 
+  select(-c(Experiment,Year)) -> dat11
+
+# getting only the data we want and converting it to units we want
+# used 30" x 30" quadrats
+library(measurements)
+
+dat11 %>% 
+  select(experiment,sample_type,sample_location,plot,exclosure,
+         wet_forage_biomass__with_bag_grams,
+         bag_tare_grams,
+         dry_forage_biomass_with_bag_grams) %>% 
+  rename(wet = wet_forage_biomass__with_bag_grams,
+         dry = dry_forage_biomass_with_bag_grams,
+         tare = bag_tare_grams) %>% 
+  mutate(wet = wet-tare,
+         dry = dry-tare) %>% 
+  drop_na(dry) %>% 
+  select(-tare) %>% 
+  mutate(water = round((wet-dry)/wet*100,1)) %>% 
+  # converting units from grams per 30x30" quadrat to Mg ha
+  mutate(
+    wet_Mgha = conv_multiunit(
+      wet/(30*30),
+      from = "g / inch2", to = "Mg / hectare"
+    ),
+    dry_Mgha = conv_multiunit(
+      dry/(30*30),
+      from = "g / inch2", to = "Mg / hectare"
+    )
+  ) %>% 
+  rename(water_content_percent = water)-> dat12
+  

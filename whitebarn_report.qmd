@@ -1,9 +1,20 @@
 ---
-title: "whitebarn fall baseline samples 2023"
+title: "whitebarn forage quality and yield of fall baseline samples 2023"
+author: Jesse Puka-Beals
+date: "27Nov2023"
 format: pdf
+quarto:
+  code:
+    echo: false
+  ggplot:
+    theme: "theme_bw"  # Set the default theme for ggplot
+    color_palette: "Set1" 
 editor: visual
 editor_options: 
   chunk_output_type: console
+bibliography:
+  - Hunter2.bib
+
 ---
 
 ```{r echo=FALSE,include=FALSE}
@@ -11,31 +22,39 @@ source("whitebarn_nir_summary.R")
 
 ```
 
-# NIRS
+# Forage quality
 
-forage quality estimated using near infrared spectroscopy (NIRS) Perten DA7250 with 'hay' equation in small white static plastic cup.
+forage quality estimates using near infrared spectroscopy (NIRS) Perten DA7250 with 'hay' equation in small white static plastic cup.
 
 machine struggled to confidently predict neutral detergent fiber digestibility so I am not reporting those values nor relative forage quality.
 
 protein, adf (acid detergent fiber) and ndf (neutral detergent fiber) expressed as percent of dry matter.
 
-rfv.sdsu is relative feed value (RFV) and has no units.
+rfv.sdsu is relative feed value (RFV), no units.
 
-# Straw bale
+| Use case                  | protein target (%) | relative feed value target |
+|--------------------------|--------------------|---------------------------|
+| growing or lactating cows | 16                 | 125+                       |
+| maintenance/dry cows      | 8-12               | 100+                       |
 
-Over a dozen cores of straw bales were sampled at white barn during fall sampling. We scanned 8 sub-samples to predict forage quality.
+: Forage quality numbers in context
+
+## straw bale
+
+Over a dozen cores of straw bales were sampled at white barn during fall sampling. We scanned 8 sub-samples to predict forage quality. These straw bales also had sprouting seeds when sampled.
 
 Protein averaged 5.9 %, RFV averaged 63.
 
 ```{r echo=F}
+
+
 # just data from straw bale sample
 dat8 %>% 
   select(protein,adf,ndf,rfv.sdsu) %>% 
-  summary()
-
+  summary() 
 ```
 
-# Plot data
+## baseline quadrat samples
 
 We collected fall baseline samples from 3 locations in the field. From each location, 3 samples within the exclosure and 3 samples outside. Therefore we had 3\*(3+3) total samples from the field, each sample was scanned 3 times after grinding, resulting in 54 total data points for forage quality.
 
@@ -47,16 +66,17 @@ dat9 %>%
 
 ```{r echo=F, message=FALSE}
 # data without straw bale
+
 dat9 %>% 
   ggplot(aes(protein)) +
-  stat_bin()
+  stat_bin(bins = 10)
 
 dat9 %>% 
   ggplot(aes(rfv.sdsu)) +
-  stat_bin()
+  stat_bin(bins=10) 
 ```
 
-# Comparisons
+#### comparisons
 
 ```{r echo=FALSE}
 dat9 %>% 
@@ -72,11 +92,54 @@ dat9 %>%
   geom_boxplot()
 ```
 
+# Forage yield
 
+Estimates from 30" x 30" quadrat
 
-# Conclusions
+Expect around 5 Mg ha dry matter yield [@Hunter2020].
 
-These are fall baseline samples of intermediate wheatgrass. 
-We expect good quality forage. This would be protein around 15% and relative feed value of 150.
-We expect normally distributed data
-We do not expect any differences by exclosure (inside vs outside). 
+```{r echo=F}
+dat12 %>% 
+  select(wet_Mgha,dry_Mgha,water_content_percent) %>% 
+  summary()
+
+dat12 %>% 
+  ggplot(aes(water_content_percent)) + 
+  stat_bin(bins = 8)
+
+dat12 %>% 
+  ggplot(aes(dry_Mgha)) + 
+  stat_bin(bins = 8)
+
+```
+
+#### comparisons
+
+```{r echo=F, fig.cap="comparison"}
+dat12 %>% 
+  ggplot(aes(sample_location,dry_Mgha,
+             fill=exclosure)) +
+  geom_boxplot()  
+
+dat12 %>% 
+    ggplot(aes(sample_location,water_content_percent,
+             fill=exclosure)) +
+  geom_boxplot() 
+```
+
+# Discussion
+
+These are fall baseline samples of intermediate wheatgrass.
+
+We do not expect to see any treatment differences, but this provides valuable insight into the variability among samples and the amount of samples needed to detect differences if present (power analysis).
+
+We expect normally distributed data for quality and yield, and we observe this. No obvious outliers. 
+
+We expect good quality forage from the fall biomass and poor quality from the summer straw. *Fall* We observe about 10% protein and an RFV of 85. This is much lower than expected, but can be fed to dry cows as maintenance feed. It's possible our predictions are incorrect, potentially overestimating the amount of non-digestible fiber in the sample. We expect the forage to be more digestible when harvested in fall (RFV ~125-150). *Summer straw* With protein at 6% and RFV at 62, this is poor quality feed as expected.
+
+We expect a large fall forage harvest approaching 5 Mg ha as reported in @Hunter2020, but we observed about 2.3 Mg ha which is suprising since forage yield seemed very high compared to other fields. 
+
+We do not expect any differences by exclosure (inside vs outside). For the most part, this held true. The middle exclosure samples were relatively higher in protein and water content than the other samples. The differences in the middle exclosure between inside and outside are interesting in figure 1 and 2, underscoring random variability in sampling.
+
+# References
+

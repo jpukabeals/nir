@@ -1,0 +1,19 @@
+Year,Experiment,Location,Sample timing,Field,Point,Trt,wet_forage_biomass__with_bag_grams,bag_tare_grams,dry_forage_biomass_with_bag_grams,cruce_protein_percent,neutral_detergent_fiber_percent,acid_detergent_fiber_percent,neutral_detergent_fiber_digestibility_percent,relative_feed_value
+2023,On Farm Grazing,White Barn Acres,fall baseline,West,1,Inside,464,61,217.8,7.126284,81.62861,37.25227,33.64483,68.25272
+2023,On Farm Grazing,White Barn Acres,fall baseline,West,2,Inside,501,61,180,10.25097,69.00695,32.58195,33.44516,85.8325
+2023,On Farm Grazing,White Barn Acres,fall baseline,West,3,Inside,459,61,208,8.454625,68.48174,33.92341,18.18084,84.91032
+2023,On Farm Grazing,White Barn Acres,fall baseline,West,4,Outside,363,61,184,4.827266,81.26817,42.31758,41.49801,64.01617
+2023,On Farm Grazing,White Barn Acres,fall baseline,West,5,Outside,439,61,188.5,7.505965,70.08754,36.03461,29.30099,80.77535
+2023,On Farm Grazing,White Barn Acres,fall baseline,West,6,Outside,380,61,169.5,8.531344,71.20005,33.73774,29.54098,81.9538
+2023,On Farm Grazing,White Barn Acres,fall baseline,Middle,1,Inside,677,61,,11.81198,67.53055,34.69608,30.07776,85.2242
+2023,On Farm Grazing,White Barn Acres,fall baseline,Middle,2,Inside,596,61,209.9,11.01293,67.21429,34.79851,22.72632,85.588
+2023,On Farm Grazing,White Barn Acres,fall baseline,Middle,3,Inside,724,61,268.7,10.42672,64.56224,33.75381,14.14991,90.20487
+2023,On Farm Grazing,White Barn Acres,fall baseline,Middle,4,Outside,428,61,149.5,14.21646,60.09211,25.83567,26.05005,106.5638
+2023,On Farm Grazing,White Barn Acres,fall baseline,Middle,5,Outside,566,61,195.4,10.76939,69.04557,36.00312,28.21009,81.98368
+2023,On Farm Grazing,White Barn Acres,fall baseline,Middle,6,Outside,646,61,224.1,12.65649,66.87416,33.75494,31.30174,87.15715
+2023,On Farm Grazing,White Barn Acres,fall baseline,East,1,Inside,422,61,183.9,7.012811,73.3117,34.85403,36.39085,78.35212
+2023,On Farm Grazing,White Barn Acres,fall baseline,East,2,Inside,428,61,161.9,10.97099,65.45284,25.90159,31.88309,97.94626
+2023,On Farm Grazing,White Barn Acres,fall baseline,East,3,Inside,332,61,153.3,9.460254,69.72116,33.04209,27.07395,84.31187
+2023,On Farm Grazing,White Barn Acres,fall baseline,East,4,Outside,441,61,199,8.791767,74.00671,33.20629,28.9817,79.2485
+2023,On Farm Grazing,White Barn Acres,fall baseline,East,5,Outside,614,61,233.5,8.426878,71.10847,34.62959,25.89091,81.0226
+2023,On Farm Grazing,White Barn Acres,fall baseline,East,6,Outside,388,61,163,12.49545,59.36371,27.31908,29.25046,106.1155
